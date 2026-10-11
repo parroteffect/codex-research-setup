@@ -29,7 +29,7 @@ BEGIN = "<!-- BEGIN CODEX RESEARCH WORKFLOW -->"
 END = "<!-- END CODEX RESEARCH WORKFLOW -->"
 META = ".codex/research-workflow-install.json"
 BACKUPS = ".codex/research-workflow-backups"
-SETTINGS = {"enabled": True, "max_concurrent_threads_per_session": 1,
+SETTINGS = {"enabled": True, "max_concurrent_threads_per_session": 3,
             "default_subagent_reasoning_effort": "high"}
 IGNORE_BEGIN = "# BEGIN CODEX RESEARCH WORKFLOW"
 IGNORE_END = "# END CODEX RESEARCH WORKFLOW"
@@ -120,7 +120,7 @@ def merge_config(text: str) -> str:
                if re.match(r'^\s*\[\s*(?:agents|"agents"|\'agents\')\s*\]\s*(?:#.*)?$', line.rstrip())]
     if len(headers) > 1:
         raise Conflict("Ambiguous [agents] text; use a reviewed manual TOML merge")
-    literals = {"enabled": "true", "max_concurrent_threads_per_session": "1",
+    literals = {"enabled": "true", "max_concurrent_threads_per_session": "3",
                 "default_subagent_reasoning_effort": '"high"'}
     if headers:
         start = headers[0] + 1

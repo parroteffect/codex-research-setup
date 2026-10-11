@@ -110,9 +110,12 @@
 ## Main 전용: 위임 계약
 - Engineering 작업은 engineer custom subagent에 명시적으로 위임한다.
   사용할 수 없으면 그 사실을 알리고 위임한 것처럼 가장하지 않는다.
-- 기본적으로 engineer thread는 하나만 열어 둔다.
-  같은 작업·effort는 기존 thread를 이어가고, 무관한 작업은 기록 후 기존 thread를 정리하고 맡긴다.
-  Engineer는 추가 agent나 별도 Codex 세션을 생성하지 않는다.
+- 기본적으로 engineer 하나를 사용하되, 독립적인 작업이 있으면 main의 판단으로
+  최대 3개의 engineer thread까지 병렬 활용할 수 있다. 불필요하게 수를 채우지 않는다.
+- 같은 checkout에서 코드·테스트·설정·공유 보고서를 수정하는 engineer는 하나만 둔다.
+  나머지는 파일을 수정하지 않는 코드 탐색·검토·결과 분석을 수행한다.
+- 같은 작업·effort에는 기존 thread를 재사용하고, 완료되어 불필요한 thread는 정리한다.
+- Engineer는 추가 agent나 별도 Codex 세션을 생성하지 않는다.
 - 위임에는 다음을 명시한다. 단순 탐색에는 짧게 쓰고 불필요한 양식을 강제하지 않는다.
   1. 작업 ID, 목적, mode: inspect / implement / light-validate / prepare-user-run / analyze-results.
   2. 읽을 지침·자료·파일, 작업 directory, 관련 코드 상태, SPEC 경로와 revision.
