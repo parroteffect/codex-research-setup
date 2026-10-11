@@ -1,0 +1,10 @@
+# Merge into the existing [agents] table; do not duplicate it.
+# Preserve existing model, permission, sandbox, and project settings.
+# This caps open subagent threads, not shell processes or resource usage.
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 1
+
+# Default only: main selects high or xhigh using the actual spawn setting.
+# Keep model_reasoning_effort unset in .codex/agents/engineer.toml.
+default_subagent_reasoning_effort = "high"

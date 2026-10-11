@@ -1,0 +1,90 @@
+{
+  "package": "codex-research-workflow",
+  "version": "5.0.0",
+  "files": [
+    {
+      "source": "payload/.codex/VERIFY_SETUP.md",
+      "destination": ".codex/VERIFY_SETUP.md",
+      "legacy_path": ".codex/VERIFY_SETUP.md",
+      "mode": "managed-file",
+      "sha256": "78610ceb696f4942242d0f2903957c92dbf011d067ae0fe1a3b77d7bdabf3c33"
+    },
+    {
+      "source": "payload/.codex/agents/engineer.toml",
+      "destination": ".codex/agents/engineer.toml",
+      "legacy_path": ".codex/agents/engineer.toml",
+      "mode": "managed-file",
+      "sha256": "cd18250ebfae065d60720225f76ca7b4568967635d11f03bde14bfa274ed1e1f"
+    },
+    {
+      "source": "payload/.codex/config.toml",
+      "destination": ".codex/config.toml",
+      "legacy_path": ".codex/config.toml",
+      "mode": "toml-merge",
+      "sha256": "c2caa9f6a064478a41089a2841445f690a09ffc04da89371fffe0dc51c5ae03d"
+    },
+    {
+      "source": "payload/.codex/guides/code-review.md",
+      "destination": ".codex/guides/code-review.md",
+      "legacy_path": ".codex/guides/code-review.md",
+      "mode": "managed-file",
+      "sha256": "8ebc15b8895ffe442b0c40637a409ff1b30c5f039354c26cbc9d28d50dc2ee4f"
+    },
+    {
+      "source": "payload/.codex/guides/implementation.md",
+      "destination": ".codex/guides/implementation.md",
+      "legacy_path": ".codex/guides/implementation.md",
+      "mode": "managed-file",
+      "sha256": "cd8bcd1e42b4e5886bf67b5d4ec587b855864bee00c42c51e6c9e4758ce1f5ca"
+    },
+    {
+      "source": "payload/.codex/guides/research.md",
+      "destination": ".codex/guides/research.md",
+      "legacy_path": ".codex/guides/research.md",
+      "mode": "managed-file",
+      "sha256": "c5910a0b4ab5856bca52914a30eaacdb0b7a758d69c4a20c3723cd9c6ae55bd4"
+    },
+    {
+      "source": "payload/AGENTS.md",
+      "destination": "AGENTS.md",
+      "legacy_path": "AGENTS.md",
+      "mode": "agents-block",
+      "sha256": "f325c5fc7a2136b95471425c9634dff5d9f59fd7634ea839fe0c38bf11d31d99"
+    },
+    {
+      "source": "payload/START.txt",
+      "destination": ".codex/RESEARCH_START.txt",
+      "legacy_path": "START.txt",
+      "mode": "managed-file",
+      "sha256": "0a7d1b606f2c4fab449d362a2463f81eb88b2eaaba89a0efb00aa420cfbf2ab5"
+    },
+    {
+      "source": "payload/experiments/_templates/REPORT.md",
+      "destination": "experiments/_templates/REPORT.md",
+      "legacy_path": "experiments/_templates/REPORT.md",
+      "mode": "managed-file",
+      "sha256": "85d45c5f7b773fd5010f4aaed04cc37199c86b872fb87982fc3ae59ac55d7795"
+    },
+    {
+      "source": "payload/experiments/_templates/RUNBOOK.md",
+      "destination": "experiments/_templates/RUNBOOK.md",
+      "legacy_path": "experiments/_templates/RUNBOOK.md",
+      "mode": "managed-file",
+      "sha256": "ab471e01cf62c03612e8bdc341f0bb426b96ea37702e43a0f29811cb0ddb44d6"
+    },
+    {
+      "source": "payload/experiments/_templates/SPEC.md",
+      "destination": "experiments/_templates/SPEC.md",
+      "legacy_path": "experiments/_templates/SPEC.md",
+      "mode": "managed-file",
+      "sha256": "9b6d1bc6aa729d9260c076673bd40a297692cad048dfa4ce5dbd7d61d7b0700c"
+    },
+    {
+      "source": "payload/research/STATE.md",
+      "destination": "research/STATE.md",
+      "legacy_path": "research/STATE.md",
+      "mode": "create-only",
+      "sha256": "12c3eb236bad0c537769e4bdf43b10f8b4624cbad2c214efdd7a49fec6e089b3"
+    }
+  ]
+}
