@@ -22,6 +22,7 @@ Preserve old decisions, rejected alternatives, and evidence by linking to them. 
 <!-- Keep brief; add/update only when useful. These are not fixed output quotas.
 Hypothesis status, novelty status, and user approval are separate judgments. -->
 - 유망한 후보 / 서로 다른 작동 메커니즘 / 현재 선호와 이유:
+- 성공 시 기대하는 기여와 중요성 / 현재 성공을 뒷받침하는 근거·핵심 불확실성:
 - 중요한 대안 / 기각·보류 이유 / 다시 검토할 조건:
 - 핵심 정의·가정 / 도출한 결과 / proof sketch 또는 conjecture / 남은 proof gap:
 - 가장 가까운 선행 접근 / 실제 확인한 차이 / 미확인 novelty:

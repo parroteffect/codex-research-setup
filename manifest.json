@@ -1,6 +1,6 @@
 {
   "package": "codex-research-workflow",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "files": [
     {
       "source": "payload/.codex/VERIFY_SETUP.md",
@@ -21,7 +21,7 @@
       "destination": ".codex/config.toml",
       "legacy_path": ".codex/config.toml",
       "mode": "toml-merge",
-      "sha256": "c2caa9f6a064478a41089a2841445f690a09ffc04da89371fffe0dc51c5ae03d"
+      "sha256": "e8c54f9dd11b8842664794da2f232c1812f2157aa66559fb8f11f76a1ae2d4c3"
     },
     {
       "source": "payload/.codex/guides/code-review.md",
@@ -42,21 +42,21 @@
       "destination": ".codex/guides/research.md",
       "legacy_path": ".codex/guides/research.md",
       "mode": "managed-file",
-      "sha256": "c5910a0b4ab5856bca52914a30eaacdb0b7a758d69c4a20c3723cd9c6ae55bd4"
+      "sha256": "34105effb76d6cc9de90cb248fae4d707c0d7f293c4872a89d3a9cba492b4616"
     },
     {
       "source": "payload/AGENTS.md",
       "destination": "AGENTS.md",
       "legacy_path": "AGENTS.md",
       "mode": "agents-block",
-      "sha256": "f325c5fc7a2136b95471425c9634dff5d9f59fd7634ea839fe0c38bf11d31d99"
+      "sha256": "d6f958fbc44fe4913dda8003e678c5b0d6a118bb212b1ba63f1437e29ca64902"
     },
     {
       "source": "payload/START.txt",
       "destination": ".codex/RESEARCH_START.txt",
       "legacy_path": "START.txt",
       "mode": "managed-file",
-      "sha256": "0a7d1b606f2c4fab449d362a2463f81eb88b2eaaba89a0efb00aa420cfbf2ab5"
+      "sha256": "c2acabfcf217b9a37814038b0a5379258ee100b7ba66ca9352a8a5ed2e00191d"
     },
     {
       "source": "payload/experiments/_templates/REPORT.md",
@@ -84,7 +84,7 @@
       "destination": "research/STATE.md",
       "legacy_path": "research/STATE.md",
       "mode": "create-only",
-      "sha256": "12c3eb236bad0c537769e4bdf43b10f8b4624cbad2c214efdd7a49fec6e089b3"
+      "sha256": "9cf309bcccbaabc94c9537164c37ec0533f15a5ce825b1536c74bf9dff24abc6"
     }
   ]
 }

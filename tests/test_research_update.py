@@ -71,7 +71,7 @@ class ResearchUpdateTests(unittest.TestCase):
         self.assertEqual((self.target / "research/STATE.md").read_text(encoding="utf-8"),
                          "# Existing research\nKeep this hypothesis.\n")
         metadata = json.loads((self.target / installer.META).read_text(encoding="utf-8"))
-        self.assertEqual(metadata["version"], "5.0.0")
+        self.assertEqual(metadata["version"], (ROOT / "VERSION").read_text().strip())
         self.assertEqual(installer.check(self.target), 0)
         changes, _ = installer.make_plan(self.target, "test-revision")
         self.assertEqual(changes, [])
@@ -87,7 +87,7 @@ class ResearchUpdateTests(unittest.TestCase):
 
     def test_payload_checksums_cover_research_update(self):
         manifest, _, payload = installer.read_package()
-        self.assertEqual(manifest["version"], "5.0.0")
+        self.assertEqual(manifest["version"], (ROOT / "VERSION").read_text().strip())
         for item in manifest["files"]:
             self.assertEqual(item["sha256"], installer.digest(payload[item["destination"]]))
 
