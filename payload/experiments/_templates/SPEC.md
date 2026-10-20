@@ -9,6 +9,7 @@ Use N/A for inapplicable fields and explicitly mark unknown material conditions.
 - Revision:
 - 명세 상태: draft / agreed / superseded
 - Engineering mode: inspect / implement / light-validate / prepare-user-run / analyze-results
+- 연구 모드 / 적용 과제·허용 자료: standard / monk (main이 현재 선택을 명시)
 - 본 실험 실행자: USER_ONLY
 - Agent의 완료 범위: 구현 / 가벼운 검증 / 사용자 실행 준비 / 제공된 결과 분석
 
@@ -18,6 +19,7 @@ Use N/A for inapplicable fields and explicitly mark unknown material conditions.
 - 경쟁 설명:
 - 탐색적 실험인지 사전 명세에 따른 검증인지:
 - 참조 자료와 실제 구현의 대응:
+- 선행연구 대조 범위·미확인 novelty: (monk에서는 관련 방법론 대조를 후속 검증으로 미룰 수 있음)
 
 ## 입력과 수정 경계
 - 작업 directory:

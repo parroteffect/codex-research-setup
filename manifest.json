@@ -1,20 +1,20 @@
 {
   "package": "codex-research-workflow",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "files": [
     {
       "source": "payload/.codex/VERIFY_SETUP.md",
       "destination": ".codex/VERIFY_SETUP.md",
       "legacy_path": ".codex/VERIFY_SETUP.md",
       "mode": "managed-file",
-      "sha256": "78610ceb696f4942242d0f2903957c92dbf011d067ae0fe1a3b77d7bdabf3c33"
+      "sha256": "d85d6725c088ae91c3f87961f77344a547a1d96bfe560f3aae52334e08f6476b"
     },
     {
       "source": "payload/.codex/agents/engineer.toml",
       "destination": ".codex/agents/engineer.toml",
       "legacy_path": ".codex/agents/engineer.toml",
       "mode": "managed-file",
-      "sha256": "cd18250ebfae065d60720225f76ca7b4568967635d11f03bde14bfa274ed1e1f"
+      "sha256": "51e3d37c2354c9fb1890fdb538e6f9c67ca4890c24604fb5683266dfdbb94881"
     },
     {
       "source": "payload/.codex/config.toml",
@@ -38,25 +38,32 @@
       "sha256": "cd8bcd1e42b4e5886bf67b5d4ec587b855864bee00c42c51e6c9e4758ce1f5ca"
     },
     {
+      "source": "payload/.codex/guides/monk.md",
+      "destination": ".codex/guides/monk.md",
+      "legacy_path": ".codex/guides/monk.md",
+      "mode": "managed-file",
+      "sha256": "a6dc6d0adb15047235685b69748ec8aafe7f8e1a4bac5bb1056610bc41cae5fd"
+    },
+    {
       "source": "payload/.codex/guides/research.md",
       "destination": ".codex/guides/research.md",
       "legacy_path": ".codex/guides/research.md",
       "mode": "managed-file",
-      "sha256": "34105effb76d6cc9de90cb248fae4d707c0d7f293c4872a89d3a9cba492b4616"
+      "sha256": "9abe9a18eddefe77edc1f491e97332e0879c0d32739c242c0716edda602e904d"
     },
     {
       "source": "payload/AGENTS.md",
       "destination": "AGENTS.md",
       "legacy_path": "AGENTS.md",
       "mode": "agents-block",
-      "sha256": "d6f958fbc44fe4913dda8003e678c5b0d6a118bb212b1ba63f1437e29ca64902"
+      "sha256": "f365ae1d67a8f751ba0e0497f4147dd00ee9ef791de68a81de3852c3d3710532"
     },
     {
       "source": "payload/START.txt",
       "destination": ".codex/RESEARCH_START.txt",
       "legacy_path": "START.txt",
       "mode": "managed-file",
-      "sha256": "c2acabfcf217b9a37814038b0a5379258ee100b7ba66ca9352a8a5ed2e00191d"
+      "sha256": "2c56452650217fe6b0c3f414eb609e6323df90f4ab027ee28def7f9c577c6f62"
     },
     {
       "source": "payload/experiments/_templates/REPORT.md",
@@ -77,14 +84,14 @@
       "destination": "experiments/_templates/SPEC.md",
       "legacy_path": "experiments/_templates/SPEC.md",
       "mode": "managed-file",
-      "sha256": "9b6d1bc6aa729d9260c076673bd40a297692cad048dfa4ce5dbd7d61d7b0700c"
+      "sha256": "ceb03dd36fed6854cf7399b7654d531adaedf364bd9bd4bf6d5639c1810996fb"
     },
     {
       "source": "payload/research/STATE.md",
       "destination": "research/STATE.md",
       "legacy_path": "research/STATE.md",
       "mode": "create-only",
-      "sha256": "9cf309bcccbaabc94c9537164c37ec0533f15a5ce825b1536c74bf9dff24abc6"
+      "sha256": "15f1a8ff1d6cf937b6b1ae2ade8101ced6ea34a0205fd2006f9d498f2d0e94be"
     }
   ]
 }

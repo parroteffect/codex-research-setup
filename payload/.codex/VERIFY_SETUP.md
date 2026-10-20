@@ -18,6 +18,10 @@
   자신의 책임임을 확인한다. 간결함은 설명, 최소 수정은 구현, USER-ONLY는 무거운 실행에 적용한다.
 - 연구 guide를 읽었다는 보고는 로딩 확인일 뿐 연구 품질·novelty·수학적 정확성의 검증이 아니다.
   이 설치 확인을 위해 연구 아이디어를 억지로 생성하거나 별도 평가 실험을 실행하지 않는다.
+- `.codex/guides/monk.md`의 존재와 AGENTS·research guide·engineer의 연결을 확인한다.
+  연구 모드는 새 과제에서 standard, 사용자가 선택한 과제에서 monk이며 STATE로 복원한다.
+  이 설치 확인은 monk를 활성화하거나 관련 방법론 survey를 수행하는 요청이 아니다.
+  Monk의 정보 사용 규칙을 읽었다는 사실도 실제 행동 준수나 novelty의 검증은 아니다.
 
 ## Engineer에 보낼 작업
 - Mode: inspect. 파일 수정·코드 실행·추가 agent 생성 금지.

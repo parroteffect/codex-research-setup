@@ -17,6 +17,8 @@ Main은 설치에 필요한 파일 확인·병합·가벼운 정적 검증을 �
   `.codex/agents/engineer.toml`에 effort를 고정하지 않는다.
 - 무거운 실제 테스트·학습·평가·benchmark·데이터 준비는 사용자만 실행한다.
 - 사용자 원문의 연구·코드 리뷰·구현 guide를 삭제하거나 짧은 persona로 대체하지 않는다.
+- Monk guide와 연구 모드 연결도 설치한다. 설치 요청만으로 monk를 활성화하지 않는다.
+  기존 과제의 모드 선택은 보존하고, 선택이 없는 새 과제는 standard로 시작한다.
 
 ## 1. 소스와 대상을 먼저 확정한다
 
@@ -91,7 +93,7 @@ python3 /path/to/source/scripts/install.py --target /path/to/research-project --
 |---|---|
 | `AGENTS.md` | 기존 프로젝트 내용을 보존하고 managed block 추가/갱신 |
 | `.codex/config.toml` | `[agents]`의 enabled/동시 thread 수/default effort만 병합 |
-| `engineer.toml`, 세 guide, 실험 템플릿 | 신규 생성 또는 확인된 미수정 배포본만 갱신 |
+| `engineer.toml`, 네 guide, 실험 템플릿 | 신규 생성 또는 확인된 미수정 배포본만 갱신 |
 | `research/STATE.md` | 없을 때만 생성; 기존 파일은 보존 |
 | `.codex/RESEARCH_START.txt`, `.codex/VERIFY_SETUP.md` | 프로젝트 안의 시작/검증 지시 |
 | `.gitignore` | 설치 백업 폴더 제외 block만 추가 |
@@ -101,6 +103,14 @@ python3 /path/to/source/scripts/install.py --target /path/to/research-project --
 설치 전 원본과 생성 여부는 `.codex/research-workflow-backups/<id>/`에 보존한다.
 백업을 공개 GitHub에 올리지 않는다. 설치는 파일별 atomic replacement이며
 여러 파일 전체에 대한 transaction은 아니다. 중간 오류 시 변경 목록·백업부터 확인한다.
+
+### v5.2로 업데이트할 때
+- `.codex/guides/monk.md`를 새 managed file로 설치하고 AGENTS·research guide·시작 안내·
+  engineer의 연결을 함께 갱신한다. 같은 경로에 사용자 파일이 있으면 보존·수동 병합 규칙을 따른다.
+- 기존 STATE는 그대로 보존한다. 연구 모드·monk 관련 항목은 실제 연구에서 필요할 때 추가한다.
+  설치가 기존 과제의 모드를 초기화하거나 일반 연구를 monk로 바꾸는 계기가 되어서는 안 된다.
+- Main/engineer 등록 구조·모델·effort·실행 권한은 유지한다. Monk는 지침으로 선택하는
+  연구 모드이며 별도 native config key나 새 agent 등록을 필요로 하지 않는다.
 
 ### v4에서 v5로 업데이트할 때
 - 배포 저장소 root의 `AGENTS.md`는 설치기용이다. 연구 지침은 `payload/AGENTS.md`를 사용한다.

@@ -8,6 +8,43 @@ Main의 model/effort는 사용자가 관리합니다. Engineering은 기본 `hig
 Main은 소스 코드·diff·호출부·테스트를 직접 읽고 검수합니다.
 연구에서는 새로운 문제·방법·메커니즘과 핵심 수학적 분석을 직접 발전시킵니다.
 
+## v5.2: Monk mode
+
+Main Research Lead가 연구 과제별로 선택하는 `standard` / `monk` 연구 모드를 추가했습니다.
+기본은 기존 standard이며, monk는 사용자의 선택으로 활성화합니다.
+연구 논의·리뷰·구현·결과 해석이라는 작업 모드와 별개로 유지하고 STATE에서 복원합니다.
+별도 monk agent나 Codex 설정 key를 추가하지 않습니다.
+
+Monk의 목표는 **유연하고 기발한 발상과 깊은 수학적 분석으로 영향력 있는 연구의 축과
+novelty가 있을 법한 방법론을 발전시키는 것**입니다.
+초기 직감·가정의 반전·문제 재정의·먼 수학적 연결·창의적인 결합을 발전시키고,
+유망한 후보의 메커니즘·핵심 유도·반례·proof gap을 실제로 검토합니다.
+완성된 증명이나 쉬운 구현을 발상의 선행 조건으로 요구하지 않습니다.
+
+- 목표 문제의 관련 방법론 survey는 발표 연도와 관계없이 제한합니다.
+  웹·로컬 자료·요약·다른 agent의 보고에도 같은 범위를 적용합니다.
+- 수학적 기법·관점·사고·정리·proof 조사는 허용합니다.
+  이미 정한 증명의 빈틈뿐 아니라 새로운 수학적 표현을 찾는 탐색에도 사용할 수 있습니다.
+- 독립적인 유도와 문헌상 novelty는 별개입니다. 관련 선행연구 대조는 후속 검증으로 남기며,
+  사용자가 요청하면 후보 기록을 보존하고 해당 과제를 standard로 전환해 대조합니다.
+- Main의 직접 검수, engineer의 high/xhigh, single-writer와 USER-ONLY 실행 경계를 유지합니다.
+
+설치 후 연구 프로젝트에서 다음처럼 사용합니다.
+
+```text
+이 문제는 monk mode로 연구하자.
+문제: [연구할 질문과 중요한 제약]
+```
+
+선행연구 대조를 시작하려면 `이 후보를 이제 선행연구와 비교하자`라고 요청합니다.
+대조 없이 일반 연구로 돌아가려면 `이 과제는 standard mode로 전환하자`라고 요청합니다.
+모드는 agent가 자동 해제하지 않으며, 같은 과제를 구현으로 넘겨도 engineer에게 전달됩니다.
+
+상세 지침은 [monk guide](payload/.codex/guides/monk.md)에 있습니다.
+기존 STATE는 업데이트 시 보존하고 필요한 새 항목만 이후 연구에서 병합합니다.
+이 모드는 지침 수준의 정보 사용 정책이며, 완전한 문맥 격리·검색 차단이나
+연구 성능·novelty의 향상을 보장하지 않습니다.
+
 ## v5.1: 기여를 중심으로 하는 novelty 탐색
 
 새 연구 방향을 만들 때 성공 시 남을 기여와 중요한 한계를 구체화하고,
@@ -69,7 +106,8 @@ Python·패키지·Codex 자체를 자동 설치/업데이트하지 않습니다
 |---|---|
 | `BOOTSTRAP.md` | Codex가 읽고 따르는 설치 절차·충돌 처리·종료 조건 |
 | `scripts/install.py` | 네트워크/외부 dependency 없는 설치기. 기본 dry run, `--apply`, `--check` |
-| `payload/` | 설치 대상 AGENTS.md, engineer, 세 guide, 상태·실험 템플릿 |
+| `payload/` | 설치 대상 AGENTS.md, engineer, 네 guide, 상태·실험 템플릿 |
+| `payload/.codex/guides/monk.md` | 독립적인 발상·수학적 연구와 과제별 조사 범위·전환 기준 |
 | `payload/.codex/VERIFY_SETUP.md` | 재시작 후 실제 등록·위임·effort 확인 절차 |
 | `manifest.json` | source→destination, 설치 방식, payload checksum |
 | `tests/` | 임시 폴더에서만 실행하는 설치기·갱신·연구 지침 연결 테스트 |

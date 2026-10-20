@@ -9,6 +9,8 @@ Preserve old decisions, rejected alternatives, and evidence by linking to them. 
 - 질문:
 - 사용자가 승인한 목표·수정 범위:
 - 현재 모드: 연구 논의 / 대화형 리뷰 / 구현 / 결과 해석
+- 연구 모드: standard
+- 연구 모드의 적용 과제 / 사용자 선택·전환 근거: (monk 선택 시 기록하고 재개 때 복원)
 - 이번 요청의 종료 조건:
 
 ## 현재 판단
@@ -28,6 +30,17 @@ Hypothesis status, novelty status, and user approval are separate judgments. -->
 - 가장 가까운 선행 접근 / 실제 확인한 차이 / 미확인 novelty:
 - 결론을 바꿀 수 있는 다음 계산·증거·판별 실험:
 - 상세 연구 노트 링크: (필요할 때만 research/notes/<topic>.md 사용)
+
+## Monk 연구 맥락
+<!-- Fill only for a monk task or its follow-up comparison.
+Keep the mode separate from the task type and preserve earlier exposure and findings. -->
+- 출발 문제·제약·관찰 / 이미 제공되거나 확인한 자료:
+- 유망한 연구의 축·기발한 발상 / 발전시킨 메커니즘·핵심 불확실성:
+- 활용한 수학적 관점·기법·출처와 성립 조건:
+- 중요한 관련 방법론 노출과 후보에 준 영향:
+- 선행연구 대조 상태·확인 범위: (미확인은 monk 후속 대조 대기로 남김)
+- 대조 전 후보의 주장·유도·proof gap snapshot 또는 revision:
+- 사용자가 요청한 전환·대조 범위 / 다음 행동:
 
 ## 실행 경계와 가벼운 검증
 - 본 실험 실행자: USER_ONLY

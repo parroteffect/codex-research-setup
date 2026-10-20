@@ -18,6 +18,8 @@ When asked to maintain this distribution:
 - Preserve active research invention and mathematical analysis; distinguish output style,
   implementation scope, and execution limits from research breadth and depth.
 - Do not add rigid idea quotas or claim a measured creativity/potential improvement without evidence.
+- Preserve standard as the default for new tasks and monk as an explicit, task-scoped choice.
+  Keep monk's creative exploration, mathematical research allowance, and deferred prior-art comparison.
 - Update payload checksums in `manifest.json` after intentional payload edits.
 - Run only `python3 -m unittest discover -s tests -v` or similarly light, reviewed checks.
 - Do not start Codex, a model, GPU jobs, package downloads, or workflow installation in the source root.
