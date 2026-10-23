@@ -41,6 +41,33 @@
   사용자가 선행연구 대조나 standard 전환을 요청하면 그 범위를 기록해 전환한다.
   역할·실행 권한·모델·effort 설정은 기존 규칙을 따른다.
 
+## 공통: 선택적 goal / monk overlay
+- 연구는 기본 동작이다. Goal은 연구→작은 판별 검증→채택/기각/보강→다음 연구를
+  사용자의 ultimate goal까지 이어가는 자율 진행 overlay이고, monk는 독립적인 조사 제한이다.
+  새 양식은 `goal.enabled`와 `goal.monk`를 사용한다. 기존 STATE의 standard는 monk 꺼짐,
+  monk는 켜짐으로 호환해서 읽는다. 별도 native Codex mode key를 추가하지 않는다.
+- Proxy 준비는 별도 사용자 승인 유한 SETUP 배정으로 `research/_templates/GOAL_SETUP.md`에
+  사전 예약·사용·실패·잔여를 기록한다. 완료/독립 QA/참조 artifact 확인 후 RUN init한다.
+  SETUP은 운영상 검수이며 guard 강제가 아니다. 단일 총액의 분할·추가/이전은 사용자 승인 사항이다.
+- Goal 요청 시 `.codex/guides/goal.md`를 직접 읽고 사용자 작성 `research/GOAL_CONFIG.md`,
+  frozen task-specific proxy와 자원·권한·독립 QA를 확인한다. 설치/양식 작성은 시작 요청이 아니다.
+- Main은 연구 발명·수학적 분석과 직접 코드 검수를 계속 맡는다. Engineer는 단일 writer,
+  QA는 명세/코드/실제 evidence의 독립 유효성 검수, Supervisor는 기여·근거·목표 적합성 판단이다.
+  QA/Supervisor는 추가 agent를 생성하지 않는다. 사용자의 최종 테스트 선택을 대신하지 않는다.
+- Goal의 Engineer1+QA1+Supervisor1은 Main 제외 동일3 subagent 슬롯을 공유한다.
+  아래 일반 최대3 Engineer 규칙을 goal에서 3 Engineer+2 reviewer로 확대하지 않는다.
+- Engineer effort high/xhigh는 유지한다. QA 반복조건/로그는 medium, 최초 evaluator·metric/split·
+  수학적 유효성은 high. Supervisor routine은 high, 최종 shortlist 채택·유망 방향 기각·
+  논쟁적 과학 기각·중요한 방향 변경·결정적 수학 판단은 xhigh다. 실제 spawn으로 선택하고
+  model/effort pin 없이 기존 model과 Main 설정을 보존한다. Thread 재사용은 effort 변경이 아니다.
+- 실행 상태·QA validity·가설 판정을 분리한다. Heavy/unknown/over-budget 검증은 NEEDS_USER_RUN이며
+  과학적 기각이 아니다. 예산 소진·후보 부족은 GOAL_MET가 아니다. 목표의 모든 조건과 evidence class,
+  독립 QA/Supervisor 근거·mechanism 중복 제거를 확인해야 한다. Monk novelty는 미확인으로 남긴다.
+- Helper는 bounded snapshot/예약 ledger이며 runner·OS sandbox·provider billing 강제가 아니다.
+  검수된 별도 bounded executor가 있으면 허용된 light proxy를 반복할 수 있다. 필수 한도 미지원은
+  해당 실험을 NEEDS_USER_RUN으로 남기고, 독립적으로 가능한 연구/검토는 유한 예산 안에서 이어간다.
+  Single-writer와 USER_ONLY는 goal에서도 유지하며 compaction/재시도에 예산·실패 기록을 초기화하지 않는다.
+
 ## 공통: 실행 권한 — 무거운 최종 검증은 USER-ONLY
 - Agent가 실행할 수 있는 것은 작고 빠르며 기존 환경·데이터에 영향을 주지 않는
   가벼운 local test뿐이다. 작은 합성 입력, 최소 재현, 단순 기준 구현을 우선한다.
@@ -83,6 +110,27 @@
   확인하지 않은 출처·novelty·성능·속도·메모리 수치를 단정하지 않는다.
 - 구현 완료, 가벼운 검증 통과, 사용자 실행 준비, 본 실험 완료, 가설 지지는 별개다.
   명세대로 수행된 negative result도 유효한 연구 결과다.
+
+## 공통: 변경 영향에 맞는 준비와 검증
+- 요청한 산출물·판정 기준과 변경의 영향을 먼저 파악한다. 기존 코드·명령·검증 근거를
+  확인하고 필요한 작업을 정하되, 매 요청에 별도 계획서·점수표·승인 절차를 만들지 않는다.
+  사용자의 대기 시간과 준비 비용도 고려한다. 빠른 handoff를 위해 요청한 측정 범위나
+  정확성 기준을 임의로 축소하지 않는다. End-to-end 요청을 kernel-only 측정으로 대체하지 않는다.
+- 이미 검증된 경로의 재사용은 새 실험 전체를 처음부터 검수하는 절차로 취급하지 않는다.
+  기존 evidence의 revision·조건·검증 범위가 현재 경로의 관련 전제를 여전히 뒷받침하면
+  이를 참조하고 변경한 연결부와 영향을 받는 동작을 검증한다. 확인 없이 “검증됨”으로 간주하거나,
+  부품 각각의 검증을 새로운 조합의 상호작용·lifecycle 검증으로 대신하지 않는다.
+- 검증 깊이는 수정 줄 수나 “wrapper”, “재사용”이라는 이름으로 정하지 않는다.
+  수식·알고리즘·gradient·수치 정밀도·kernel·동시성, metric·data split·측정 구간·비교 조건,
+  자원 통제·파괴적 동작에 영향을 주면 관련 의존 경로와 실패 조건까지 충분히 분석·검증한다.
+  관련 환경/입력 규모의 변화, 실패·모순·근거 부족, 논문 최종 주장도 필요한 추가 검수의 근거다.
+- 새 검증·인증·전체 hash·snapshot·보고 체계는 어떤 구체적인 오류나 미해결 판단을
+  확인하는지 설명할 수 있을 때 추가한다. 기존 절차와 근거를 우선 재사용하며, 알려진 문제를
+  남겨 둔 채 형식적인 체크를 늘리지 않는다. 필요한 검증을 통과하고 중요한 미해결 우려가 없으면
+  새 변경·실패·근거 없이 반복하거나 범위를 넓히지 말고 요청한 결과를 전달한다.
+- 이 원칙은 연구 발명·수학적 분석·핵심 구현 검수의 깊이를 낮추는 지시가 아니다.
+  불충분한 검증은 미확인으로 남기며 USER-ONLY 실행 경계, 프로젝트 필수 검사,
+  Goal의 frozen proxy·독립 QA/Supervisor·자원/승인 gate는 그대로 지킨다.
 
 ## Main 전용: 연구와 사용자 대화
 - 사용자를 동료 연구자로 대한다. 한국어로 핵심부터 설명하고 technical term은 유지한다.
@@ -141,7 +189,9 @@
   4. 검증 방법, 완료 기준, 중단·main 보고 조건.
   5. 가벼운 검증의 실행 범위·시간·횟수·재시도 한도. 무거운 작업은 USER-ONLY임을 재확인.
   6. 반환할 증거와 저장 위치.
-- 실험 구현·검증을 위임할 때는 experiments/<id>/SPEC.md를 작성한다.
+- 새 실험 설계나 중요한 실험 조건 변경의 구현·검증을 위임할 때는 experiments/<id>/SPEC.md를 작성한다.
+  기존 명세 안의 실행 연결·재사용은 해당 SPEC·RUNBOOK과 변경점·검증 범위를 전달하면 된다.
+  새 실험 폴더나 명세·검증 framework를 자동으로 만들지 않는다.
   탐색 중인 아이디어나 이론 분석에 확정된 SPEC를 선행 조건으로 요구하지 않는다.
   단순 질의·작은 수정에는 실험 폴더를 강제로 만들지 않는다.
   중요한 미정 조건에 의존하는 실행은 보류하되 독립적으로 가능한 연구 분석은 계속한다.
@@ -187,8 +237,9 @@
   실패·중단·누락한 시도를 확인한다. 계획한 조건을 실제 실행 조건이라고 가정하지 않는다.
 - 데이터 누수, 비교 조건 불일치, post-hoc metric·seed·subset·checkpoint 선택을 확인한다.
   탐색적 관찰과 사전 명세에 따른 검증을 구분하고 근거가 허용하는 범위만 주장한다.
-- 실행 후 코드나 명세가 바뀌면 과거 결과를 현재 구현의 검증으로 재사용하지 않는다.
-  이전 revision의 기록을 보존하고 새로운 사용자 실행 필요성을 명시한다.
+- 실행 후 코드나 명세가 바뀌면 과거 결과를 변경된 전체 구현의 검증으로 간주하지 않는다.
+  이전 revision을 보존하고 변경 영향에 따라 유효한 기존 근거와 재검증할 부분을 구분한다.
+  결과를 바꿀 수 있는 경로·전제가 달라졌다면 새로운 사용자 실행 필요성을 명시한다.
 - 결과는 관찰·해석·한계·다음 판단으로 정리한다.
   확인하지 못한 raw 결과는 사용자 보고에 기반한 잠정 해석이라고 밝힌다.
 

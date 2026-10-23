@@ -23,3 +23,7 @@ When asked to maintain this distribution:
 - Update payload checksums in `manifest.json` after intentional payload edits.
 - Run only `python3 -m unittest discover -s tests -v` or similarly light, reviewed checks.
 - Do not start Codex, a model, GPU jobs, package downloads, or workflow installation in the source root.
+
+- v5.3 maintenance: preserve default research plus independent goal/monk overlays, role-specific
+  effort dispatch (Engineer high/xhigh; QA medium/high; Supervisor high/important xhigh), and
+  create-only user goal settings. The goal guard is bookkeeping, never an experiment runner.

@@ -1,0 +1,199 @@
+{
+  "created_utc": "2026-10-22T07:10:18.078355+00:00",
+  "source_root": "/workspace/_nas/_shared/codex-research-setup",
+  "test_root": "/tmp/goal-hardening-20261022-efm1pk5e",
+  "source_files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 122,
+      "sha256": "bbb6d9194c61371aad1d0867d4c08c051581c341d9f22440edfc7bfba8f37ee7"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 82,
+      "sha256": "4e21af7834a24e6b0ead5378b4ed8c6818f387593f28d546473be9f1375d9986"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 2079,
+      "sha256": "4a1b476c001c9812205d4477142a34f8a3a34b9b314f910cdfbb94eef79d1bce"
+    },
+    {
+      "path": "BOOTSTRAP.md",
+      "bytes": 15672,
+      "sha256": "71199b447012c9fc7893b83eba5623f616951e4a52764115e29152b90ab33058"
+    },
+    {
+      "path": "README.md",
+      "bytes": 16016,
+      "sha256": "99d7825e2f0b6a596d87f94d988033a3debcfca50d163173d3caeea7ab71ef16"
+    },
+    {
+      "path": "VERSION",
+      "bytes": 6,
+      "sha256": "ee059d0775289e876f5e34efd57679411860c0164ae0dc69dcf7877dce4e66fb"
+    },
+    {
+      "path": "legacy-hashes.json",
+      "bytes": 5326,
+      "sha256": "f1755876fd907da4205d3b0722cb3c7602ec556e34e1b8efe102ed6fbb924787"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 6840,
+      "sha256": "7aedc4d4456f01e0173083d0af3db5779afc45eb0875b88af24eee9a2727ca23"
+    },
+    {
+      "path": "payload/.codex/VERIFY_SETUP.md",
+      "bytes": 5644,
+      "sha256": "06aecd6eb203e19e2230e89e6fef978b11a4723659ace1f35cfad1b77619f997"
+    },
+    {
+      "path": "payload/.codex/agents/engineer.toml",
+      "bytes": 10743,
+      "sha256": "6188d9eeeee426ec8d124dc8123a560199975538c6f1d61f604cf0aeb973abd2"
+    },
+    {
+      "path": "payload/.codex/agents/qa.toml",
+      "bytes": 3026,
+      "sha256": "faf16a469c1aafb619dd5786e32d0d69e29bf8a09393c55b806e1db79551afaa"
+    },
+    {
+      "path": "payload/.codex/agents/supervisor.toml",
+      "bytes": 2684,
+      "sha256": "d4779edfc10ce31d06bed30e3cd3edee0db5ba88df4e18af428b06a2d5d6688d"
+    },
+    {
+      "path": "payload/.codex/config.toml",
+      "bytes": 553,
+      "sha256": "530c1b6e2a64e55ae276628ade9c416be04251204ea5ad8520460facd4cfee64"
+    },
+    {
+      "path": "payload/.codex/guides/code-review.md",
+      "bytes": 10552,
+      "sha256": "8ebc15b8895ffe442b0c40637a409ff1b30c5f039354c26cbc9d28d50dc2ee4f"
+    },
+    {
+      "path": "payload/.codex/guides/goal.md",
+      "bytes": 20031,
+      "sha256": "fddf9c116003d198e9d93fd191a0706e621b2a6d047be9e214bc490ba3a8e91f"
+    },
+    {
+      "path": "payload/.codex/guides/implementation.md",
+      "bytes": 7037,
+      "sha256": "cd8bcd1e42b4e5886bf67b5d4ec587b855864bee00c42c51e6c9e4758ce1f5ca"
+    },
+    {
+      "path": "payload/.codex/guides/monk.md",
+      "bytes": 13743,
+      "sha256": "a13d6d98c929bcd9d3d9ca63115e06d45453bdcf913abf5781f948ccee9f127a"
+    },
+    {
+      "path": "payload/.codex/guides/research.md",
+      "bytes": 13968,
+      "sha256": "b9cb00b3624b134472bdd75f2f57f98434d79dfddd21f8035fe555d4136d4025"
+    },
+    {
+      "path": "payload/.codex/tools/goal_guard.py",
+      "bytes": 34660,
+      "sha256": "630944b695fa47fe3463d062df6f9bf998335f0cd36cf4a482e917d754676718"
+    },
+    {
+      "path": "payload/AGENTS.md",
+      "bytes": 23271,
+      "sha256": "5714a0fe86f33420054fd961dc57c1562921cdc35cdda70c18ac3493961ec844"
+    },
+    {
+      "path": "payload/START.txt",
+      "bytes": 5066,
+      "sha256": "7ea5186d0292d748c99316c6104a3ac57df36ad0cb67e5d070d3b716dc9dd7e5"
+    },
+    {
+      "path": "payload/examples/GOAL_EXAMPLE.md",
+      "bytes": 3531,
+      "sha256": "d4f3f943bafc7690fd3a5f8dadbae25a6417140a686cfb0dbb8c454ab91df864"
+    },
+    {
+      "path": "payload/experiments/_templates/REPORT.md",
+      "bytes": 2381,
+      "sha256": "85d45c5f7b773fd5010f4aaed04cc37199c86b872fb87982fc3ae59ac55d7795"
+    },
+    {
+      "path": "payload/experiments/_templates/RUNBOOK.md",
+      "bytes": 3080,
+      "sha256": "ab471e01cf62c03612e8bdc341f0bb426b96ea37702e43a0f29811cb0ddb44d6"
+    },
+    {
+      "path": "payload/experiments/_templates/SPEC.md",
+      "bytes": 2767,
+      "sha256": "ceb03dd36fed6854cf7399b7654d531adaedf364bd9bd4bf6d5639c1810996fb"
+    },
+    {
+      "path": "payload/research/GOAL_CONFIG.md",
+      "bytes": 3843,
+      "sha256": "3fb1b52f1daff7efdabb7a812d694f862d34349689063c86518e49f859ace250"
+    },
+    {
+      "path": "payload/research/STATE.md",
+      "bytes": 4163,
+      "sha256": "a97949d8690d7ff63c8a1aad8641719e1d7e869861a2733aa4b32e26fc7c4f83"
+    },
+    {
+      "path": "payload/research/_templates/CANDIDATE.md",
+      "bytes": 1494,
+      "sha256": "149a531a6d0819f7ca49ae4225778f8ef5240541e4e2663e645891d7360faf65"
+    },
+    {
+      "path": "payload/research/_templates/GOAL_CONFIG.md",
+      "bytes": 3843,
+      "sha256": "3fb1b52f1daff7efdabb7a812d694f862d34349689063c86518e49f859ace250"
+    },
+    {
+      "path": "payload/research/_templates/GOAL_PROGRESS.md",
+      "bytes": 2296,
+      "sha256": "6d5f3c237e452535fa83a9e450ecc3bf264eb65620bdec2c7db923450750d013"
+    },
+    {
+      "path": "payload/research/_templates/GOAL_SETUP.md",
+      "bytes": 4079,
+      "sha256": "804f73142caf8f0c2f82994cc99ef977db42529840076f82bccdfbe835111f5e"
+    },
+    {
+      "path": "payload/research/_templates/PROXY_CONTRACT.md",
+      "bytes": 2667,
+      "sha256": "86df781e684d75bdd05bc47476c1905193d7eedea9899991f0fd4457ec1b9194"
+    },
+    {
+      "path": "scripts/install.py",
+      "bytes": 19226,
+      "sha256": "7f016e6f7912061e7f61fa572cefc11eac9a3a9bd9c31cde8966e11d49317003"
+    },
+    {
+      "path": "tests/test_goal_guard.py",
+      "bytes": 33352,
+      "sha256": "9faedca7f23bc6f4ab302b5a079e984b40098282ab06a886cc43ba0e31ba56a7"
+    },
+    {
+      "path": "tests/test_goal_install.py",
+      "bytes": 6256,
+      "sha256": "a046f6a74e778ea93e6146d6d4e0972e18491c6070012443faa6e686bdaab989"
+    },
+    {
+      "path": "tests/test_install.py",
+      "bytes": 14445,
+      "sha256": "c033828ed9e50d7c98310403e5468b3227a21e441d45bc7a26287310ad06cd77"
+    },
+    {
+      "path": "tests/test_research_update.py",
+      "bytes": 6588,
+      "sha256": "dafa8503308e2a11adfdaa4b33ff274fe1bd16c3f310ee08f3d39835f271a7ab"
+    }
+  ],
+  "aggregate_sha256": "bf790316de18b1d50f242edf259d2640f6103ee1dc7b9fb0a58714cee5730d55",
+  "static_checks": {
+    "python_ast": "PASS",
+    "payload_hashes": "PASS",
+    "byte_identical_copy": "PASS"
+  },
+  "tests": "NOT_RUN"
+}

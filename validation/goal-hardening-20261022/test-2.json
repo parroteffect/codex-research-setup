@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/root/miniconda3/envs/kvcprs/bin/python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "cwd": "/tmp/goal-hardening-20261022-tested-4jkydmt7",
+  "elapsed_seconds": 1.6190591320046224,
+  "timeout_seconds": 15,
+  "status": "PASS",
+  "exit_code": 0,
+  "source_aggregate_sha256": "9d807143b81c66248e3e1b415ba2a3564aa82cff824c443f695a1445db662137",
+  "python_version": "3.12.14 | packaged by Anaconda, Inc. | (main, Aug 27 2026, 14:46:43) [GCC 14.3.0]",
+  "finished_utc": "2026-10-22T07:13:36.555638+00:00"
+}

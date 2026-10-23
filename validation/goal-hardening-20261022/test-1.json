@@ -1,0 +1,19 @@
+{
+  "cwd": "/workspace/_nas/_shared/codex-research-setup",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-p",
+    "test_install.py",
+    "-v"
+  ],
+  "status": "TIMEOUT",
+  "timeout_seconds": 15,
+  "accounted_seconds": 15,
+  "exit_code": null,
+  "detail": "subprocess.run raised TimeoutExpired after 15s and killed the child. Initial wrapper did not persist captured stdout; see tool traceback. No assertions/pass count recoverable."
+}

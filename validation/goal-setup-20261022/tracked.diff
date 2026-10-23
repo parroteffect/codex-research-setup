@@ -1,0 +1,610 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index 62076fe..a4342b3 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -23,3 +23,7 @@ When asked to maintain this distribution:
+ - Update payload checksums in `manifest.json` after intentional payload edits.
+ - Run only `python3 -m unittest discover -s tests -v` or similarly light, reviewed checks.
+ - Do not start Codex, a model, GPU jobs, package downloads, or workflow installation in the source root.
++
++- v5.3 maintenance: preserve default research plus independent goal/monk overlays, role-specific
++  effort dispatch (Engineer high/xhigh; QA medium/high; Supervisor high/important xhigh), and
++  create-only user goal settings. The goal guard is bookkeeping, never an experiment runner.
+diff --git a/BOOTSTRAP.md b/BOOTSTRAP.md
+index b17f035..e0466f3 100644
+--- a/BOOTSTRAP.md
++++ b/BOOTSTRAP.md
+@@ -93,8 +93,8 @@ python3 /path/to/source/scripts/install.py --target /path/to/research-project --
+ |---|---|
+ | `AGENTS.md` | 기존 프로젝트 내용을 보존하고 managed block 추가/갱신 |
+ | `.codex/config.toml` | `[agents]`의 enabled/동시 thread 수/default effort만 병합 |
+-| `engineer.toml`, 네 guide, 실험 템플릿 | 신규 생성 또는 확인된 미수정 배포본만 갱신 |
+-| `research/STATE.md` | 없을 때만 생성; 기존 파일은 보존 |
++| 세 role TOML, guide/goal 도구, 템플릿 | 신규 생성 또는 확인된 미수정 배포본만 갱신 |
++| `research/STATE.md`, `research/GOAL_CONFIG.md` | 없을 때만 생성; 기존 파일은 보존 |
+ | `.codex/RESEARCH_START.txt`, `.codex/VERIFY_SETUP.md` | 프로젝트 안의 시작/검증 지시 |
+ | `.gitignore` | 설치 백업 폴더 제외 block만 추가 |
+ 
+@@ -104,6 +104,18 @@ python3 /path/to/source/scripts/install.py --target /path/to/research-project --
+ 백업을 공개 GitHub에 올리지 않는다. 설치는 파일별 atomic replacement이며
+ 여러 파일 전체에 대한 transaction은 아니다. 중간 오류 시 변경 목록·백업부터 확인한다.
+ 
++### v5.3으로 업데이트할 때
++- supervisor/qa standalone role, goal guide/guard, 최신 template를 managed file로 추가한다.
++  name 충돌/legacy [agents.supervisor]/[agents.qa]도 쓰기 전 검토한다. Model/effort pin은 없다.
++- 사용자 `research/GOAL_CONFIG.md`는 create-only다. 기존 작성본·STATE·goal history를 바꾸지 않는다.
++  최신 template와 schema 차이는 설명하고 사용자 승인 없이 예산/목표를 채우거나 migration하지 않는다.
++- 기본 연구 + 독립 goal/monk overlay다. 설치만으로 시작하지 않는다. 기존 standard=monk 꺼짐으로 호환한다.
++- Main 제외3슬롯 유지. Engineer high/xhigh, QA medium/high, Supervisor high/중요판단 xhigh를
++  실제 spawn에서 선택한다. 기존 user model/security를 보존한다. Thread followup은 effort 변경이 아니다.
++- Helper는 검증/기록용이며 runner나 OS sandbox가 아니다. 외부 bounded executor·실제 자원강제·
++  runtime 역할 검증은 NOT_VERIFIED로 남긴다. Heavy/unknown 검증은 NEEDS_USER_RUN/USER_ONLY다.
++- VERSION/manifest의 payload hash를 확인하고 알려진 v5.2 미수정 파일만 안전하게 갱신한다.
++
+ ### v5.2로 업데이트할 때
+ - `.codex/guides/monk.md`를 새 managed file로 설치하고 AGENTS·research guide·시작 안내·
+   engineer의 연결을 함께 갱신한다. 같은 경로에 사용자 파일이 있으면 보존·수동 병합 규칙을 따른다.
+diff --git a/README.md b/README.md
+index 5861843..6ee5b0c 100644
+--- a/README.md
++++ b/README.md
+@@ -8,7 +8,39 @@ Main의 model/effort는 사용자가 관리합니다. Engineering은 기본 `hig
+ Main은 소스 코드·diff·호출부·테스트를 직접 읽고 검수합니다.
+ 연구에서는 새로운 문제·방법·메커니즘과 핵심 수학적 분석을 직접 발전시킵니다.
+ 
+-## v5.2: Monk mode
++## v5.3: Goal overlay와 독립 Supervisor / QA
++
++연구는 기본 동작입니다. **Goal**은 연구→작은 판별 검증→채택/기각/보강→다음 연구를
++사용자의 ultimate goal까지 이어가는 자율 진행 옵션이고, **monk**는 독립적인 조사 제한입니다.
++사용자가 `research/GOAL_CONFIG.md`의 한 TOML block을 작성합니다. CLI 문답은 없습니다.
++새 양식은 `goal.enabled`, `goal.monk`를 쓰며 기존 standard/monk STATE는 호환합니다.
++
++Main은 발명·깊은 수학적 분석과 직접 검수를 계속 수행합니다. Engineer는 단일 writer,
++QA는 비교/evidence 유효성, Supervisor는 기여·근거·목표 적합성을 독립 검토합니다.
++Engineer high/xhigh 유지; QA 반복 검토 medium·최초 evaluator/metric/split/수학 검토 high;
++Supervisor routine high, 중요한 최종 채택·유망 방향 기각·논쟁적 기각·방향변경·수학 판단 xhigh.
++실제 spawn에서 선택하며 model/effort를 role 파일에 pin하지 않습니다.
++Main 제외3 subagent 슬롯을 세 역할이 공유합니다. 모든 반복을 full review하거나 xhigh로 만들지 않습니다.
++
++**설정·기록 도구가 포함되며 experiment runner는 포함되지 않습니다.**
++Guard는 stdlib로 config 검증·frozen proxy·보수적 budget ledger를 제공합니다.
++RAM/VRAM/disk/provider token을 물리적으로 강제하거나 Codex가 없는 동안 실행하지 않습니다.
++QA가 검수한 별도 bounded executor가 있을 때만 허용된 light proxy를 자동 반복할 수 있습니다.
++Heavy/unknown/over-budget/필수 enforcement 미지원은 NEEDS_USER_RUN이며 과학적 기각이 아닙니다.
++그와 독립인 연구/리뷰는 유한 예산 안에서 계속합니다. USER_ONLY heavy 실행은 유지합니다.
++
++처음 목표의 모든 기준, 독립 evidence와 mechanism 중복 제거를 충족해야 GOAL_MET입니다.
++예산 종료나 후보수 미달은 성공이 아닙니다. 최종 shortlist는 사용자에게 최종 테스트 선택권을 남깁니다.
++Monk에서는 문헌 novelty 미확인을 유지합니다. 반복 DEV 최적값을 독립 confirmation으로 부르지 않습니다.
++
++- [Goal 운영/명령/한계](payload/.codex/guides/goal.md)
++- [사용자 작성 양식](payload/research/GOAL_CONFIG.md), [proxy 계약](payload/research/_templates/PROXY_CONTRACT.md)
++- [작은 설명용 예시](payload/examples/GOAL_EXAMPLE.md)
++
++업데이트는 기존 user config/STATE/goal history를 보존합니다. 새 역할명 충돌·사용자 수정은
++자동 덮어쓰지 않습니다. 설치는 goal을 시작하지 않으며 runtime role 활성화는 새 세션에서 별도 확인합니다.
++
++## v5.2: Monk mode (이전 변경)
+ 
+ Main Research Lead가 연구 과제별로 선택하는 `standard` / `monk` 연구 모드를 추가했습니다.
+ 기본은 기존 standard이며, monk는 사용자의 선택으로 활성화합니다.
+@@ -106,7 +138,7 @@ Python·패키지·Codex 자체를 자동 설치/업데이트하지 않습니다
+ |---|---|
+ | `BOOTSTRAP.md` | Codex가 읽고 따르는 설치 절차·충돌 처리·종료 조건 |
+ | `scripts/install.py` | 네트워크/외부 dependency 없는 설치기. 기본 dry run, `--apply`, `--check` |
+-| `payload/` | 설치 대상 AGENTS.md, engineer, 네 guide, 상태·실험 템플릿 |
++| `payload/` | 설치 대상 AGENTS.md, engineer/supervisor/qa, guide와 goal 도구, 상태·실험 템플릿 |
+ | `payload/.codex/guides/monk.md` | 독립적인 발상·수학적 연구와 과제별 조사 범위·전환 기준 |
+ | `payload/.codex/VERIFY_SETUP.md` | 재시작 후 실제 등록·위임·effort 확인 절차 |
+ | `manifest.json` | source→destination, 설치 방식, payload checksum |
+@@ -164,7 +196,7 @@ ZIP 파일 하나만 업로드하지 마세요. `payload/.codex/` 같은 숨김
+ - [Custom subagents and effort precedence](https://learn.chatgpt.com/docs/agent-configuration/subagents)
+ - [Configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
+ 
+-v5는 v4의 Codex 설정·등록 형식을 변경하지 않습니다. 특정 로컬 CLI 버전에서의 성공을 보장하지 않습니다.
++v5.3은 기존 standalone 역할 형식을 유지하고 supervisor/qa를 추가합니다. 특정 로컬 CLI 버전에서의 성공을 보장하지 않습니다.
+ 이번 연구 지침 설계에서는 아래 공식 안내도 참고했습니다.
+ - [Astra prompts and decision boundaries](https://learn.chatgpt.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)
+ - [Reasoning prompting](https://developers.openai.com/api/docs/guides/reasoning-best-practices)
+diff --git a/VERSION b/VERSION
+index 91ff572..03f488b 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-5.2.0
++5.3.0
+diff --git a/legacy-hashes.json b/legacy-hashes.json
+index 4872e94..ca7b9e4 100644
+--- a/legacy-hashes.json
++++ b/legacy-hashes.json
+@@ -5,28 +5,33 @@
+     "f6c48d809a733fb6b802580cba626393d5d7a1ad6134d2a72a125af015472cfd",
+     "76c3fbcd2f43027e5c9f8a67530dc1f68f6bb4ae660836be77eb28e53dc36271",
+     "f325c5fc7a2136b95471425c9634dff5d9f59fd7634ea839fe0c38bf11d31d99",
+-    "d6f958fbc44fe4913dda8003e678c5b0d6a118bb212b1ba63f1437e29ca64902"
++    "d6f958fbc44fe4913dda8003e678c5b0d6a118bb212b1ba63f1437e29ca64902",
++    "f365ae1d67a8f751ba0e0497f4147dd00ee9ef791de68a81de3852c3d3710532"
+   ],
+   ".codex/agents/engineer.toml": [
+     "72ff33f6780c9ac642007fef87f1cc1d0193fe22a7c512df16577e4815d0b2fa",
+     "a657020717422f423a422cb4dcc41fff3d2ead7cac0324e248ff540d6a6d98ac",
+     "be0da10067a6507c0dba004dee40edb56ec55cc3b344db85d88004ccc484636d",
+-    "cd18250ebfae065d60720225f76ca7b4568967635d11f03bde14bfa274ed1e1f"
++    "cd18250ebfae065d60720225f76ca7b4568967635d11f03bde14bfa274ed1e1f",
++    "51e3d37c2354c9fb1890fdb538e6f9c67ca4890c24604fb5683266dfdbb94881"
+   ],
+   ".codex/config.toml": [
+     "20744ff3a3cd8c456305b4a81c54cf536be458121b72569531948808059a4113",
+     "bcb00575444d6df6852c6f1448795d4b76f09d2f37dd98da41d52b6d569bd47b",
+-    "c2caa9f6a064478a41089a2841445f690a09ffc04da89371fffe0dc51c5ae03d"
++    "c2caa9f6a064478a41089a2841445f690a09ffc04da89371fffe0dc51c5ae03d",
++    "e8c54f9dd11b8842664794da2f232c1812f2157aa66559fb8f11f76a1ae2d4c3"
+   ],
+   "research/STATE.md": [
+     "92400155970d38c3d9c50c36acdc9aabb86ff2abda0b609d0477287e5d3d936f",
+     "c43c1840df5fc76bf96f0c5cc12b1b9c66624253d44d9fcc19016240c266b7e7",
+     "12c3eb236bad0c537769e4bdf43b10f8b4624cbad2c214efdd7a49fec6e089b3",
+-    "9cf309bcccbaabc94c9537164c37ec0533f15a5ce825b1536c74bf9dff24abc6"
++    "9cf309bcccbaabc94c9537164c37ec0533f15a5ce825b1536c74bf9dff24abc6",
++    "15f1a8ff1d6cf937b6b1ae2ade8101ced6ea34a0205fd2006f9d498f2d0e94be"
+   ],
+   "experiments/_templates/SPEC.md": [
+     "0889ca4de79b1b616b30ee23e3a99a8ea90de8398e8f0bc09e4100984bf59431",
+-    "9b6d1bc6aa729d9260c076673bd40a297692cad048dfa4ce5dbd7d61d7b0700c"
++    "9b6d1bc6aa729d9260c076673bd40a297692cad048dfa4ce5dbd7d61d7b0700c",
++    "ceb03dd36fed6854cf7399b7654d531adaedf364bd9bd4bf6d5639c1810996fb"
+   ],
+   "experiments/_templates/REPORT.md": [
+     "85d45c5f7b773fd5010f4aaed04cc37199c86b872fb87982fc3ae59ac55d7795",
+@@ -38,7 +43,8 @@
+     "b261e808d1d4bd7ce244bc2721bef768657a968e3f1041a2289e5b0140e5dae5",
+     "5ee04d6f9d03851c52a6fb930a0b4f4007b5c60369c5e0a4a94e5ef86b681e8e",
+     "0a7d1b606f2c4fab449d362a2463f81eb88b2eaaba89a0efb00aa420cfbf2ab5",
+-    "c2acabfcf217b9a37814038b0a5379258ee100b7ba66ca9352a8a5ed2e00191d"
++    "c2acabfcf217b9a37814038b0a5379258ee100b7ba66ca9352a8a5ed2e00191d",
++    "2c56452650217fe6b0c3f414eb609e6323df90f4ab027ee28def7f9c577c6f62"
+   ],
+   ".codex/guides/code-review.md": [
+     "8ebc15b8895ffe442b0c40637a409ff1b30c5f039354c26cbc9d28d50dc2ee4f"
+@@ -49,13 +55,18 @@
+   ".codex/guides/research.md": [
+     "bf7f50bd5aa4175c4b2ba239150d6b6c615b7e8cf30f50955c51c3a7b75f143f",
+     "c5910a0b4ab5856bca52914a30eaacdb0b7a758d69c4a20c3723cd9c6ae55bd4",
+-    "34105effb76d6cc9de90cb248fae4d707c0d7f293c4872a89d3a9cba492b4616"
++    "34105effb76d6cc9de90cb248fae4d707c0d7f293c4872a89d3a9cba492b4616",
++    "9abe9a18eddefe77edc1f491e97332e0879c0d32739c242c0716edda602e904d"
+   ],
+   "experiments/_templates/RUNBOOK.md": [
+     "ab471e01cf62c03612e8bdc341f0bb426b96ea37702e43a0f29811cb0ddb44d6"
+   ],
+   ".codex/VERIFY_SETUP.md": [
+     "639a39a50be17fcad5b685999a5d218f8050b036bd48253996609086209cb71b",
+-    "78610ceb696f4942242d0f2903957c92dbf011d067ae0fe1a3b77d7bdabf3c33"
++    "78610ceb696f4942242d0f2903957c92dbf011d067ae0fe1a3b77d7bdabf3c33",
++    "d85d6725c088ae91c3f87961f77344a547a1d96bfe560f3aae52334e08f6476b"
++  ],
++  ".codex/guides/monk.md": [
++    "a6dc6d0adb15047235685b69748ec8aafe7f8e1a4bac5bb1056610bc41cae5fd"
+   ]
+ }
+diff --git a/manifest.json b/manifest.json
+index 691bec3..9f0bf2f 100644
+--- a/manifest.json
++++ b/manifest.json
+@@ -1,27 +1,41 @@
+ {
+   "package": "codex-research-workflow",
+-  "version": "5.2.0",
++  "version": "5.3.0",
+   "files": [
+     {
+       "source": "payload/.codex/VERIFY_SETUP.md",
+       "destination": ".codex/VERIFY_SETUP.md",
+       "legacy_path": ".codex/VERIFY_SETUP.md",
+       "mode": "managed-file",
+-      "sha256": "d85d6725c088ae91c3f87961f77344a547a1d96bfe560f3aae52334e08f6476b"
++      "sha256": "357c188d7db3edc346eaa67a39c5932ffcc71646c6c5451bef3767c9603ebb62"
+     },
+     {
+       "source": "payload/.codex/agents/engineer.toml",
+       "destination": ".codex/agents/engineer.toml",
+       "legacy_path": ".codex/agents/engineer.toml",
+       "mode": "managed-file",
+-      "sha256": "51e3d37c2354c9fb1890fdb538e6f9c67ca4890c24604fb5683266dfdbb94881"
++      "sha256": "6188d9eeeee426ec8d124dc8123a560199975538c6f1d61f604cf0aeb973abd2"
++    },
++    {
++      "source": "payload/.codex/agents/qa.toml",
++      "destination": ".codex/agents/qa.toml",
++      "legacy_path": ".codex/agents/qa.toml",
++      "mode": "managed-file",
++      "sha256": "faf16a469c1aafb619dd5786e32d0d69e29bf8a09393c55b806e1db79551afaa"
++    },
++    {
++      "source": "payload/.codex/agents/supervisor.toml",
++      "destination": ".codex/agents/supervisor.toml",
++      "legacy_path": ".codex/agents/supervisor.toml",
++      "mode": "managed-file",
++      "sha256": "d4779edfc10ce31d06bed30e3cd3edee0db5ba88df4e18af428b06a2d5d6688d"
+     },
+     {
+       "source": "payload/.codex/config.toml",
+       "destination": ".codex/config.toml",
+       "legacy_path": ".codex/config.toml",
+       "mode": "toml-merge",
+-      "sha256": "e8c54f9dd11b8842664794da2f232c1812f2157aa66559fb8f11f76a1ae2d4c3"
++      "sha256": "530c1b6e2a64e55ae276628ade9c416be04251204ea5ad8520460facd4cfee64"
+     },
+     {
+       "source": "payload/.codex/guides/code-review.md",
+@@ -30,6 +44,13 @@
+       "mode": "managed-file",
+       "sha256": "8ebc15b8895ffe442b0c40637a409ff1b30c5f039354c26cbc9d28d50dc2ee4f"
+     },
++    {
++      "source": "payload/.codex/guides/goal.md",
++      "destination": ".codex/guides/goal.md",
++      "legacy_path": ".codex/guides/goal.md",
++      "mode": "managed-file",
++      "sha256": "4bb3eb8051ce4688c9f49f813ebcfccb22ec4ce4e2f4dd9fc232dc0606359543"
++    },
+     {
+       "source": "payload/.codex/guides/implementation.md",
+       "destination": ".codex/guides/implementation.md",
+@@ -42,28 +63,42 @@
+       "destination": ".codex/guides/monk.md",
+       "legacy_path": ".codex/guides/monk.md",
+       "mode": "managed-file",
+-      "sha256": "a6dc6d0adb15047235685b69748ec8aafe7f8e1a4bac5bb1056610bc41cae5fd"
++      "sha256": "a13d6d98c929bcd9d3d9ca63115e06d45453bdcf913abf5781f948ccee9f127a"
+     },
+     {
+       "source": "payload/.codex/guides/research.md",
+       "destination": ".codex/guides/research.md",
+       "legacy_path": ".codex/guides/research.md",
+       "mode": "managed-file",
+-      "sha256": "9abe9a18eddefe77edc1f491e97332e0879c0d32739c242c0716edda602e904d"
++      "sha256": "b9cb00b3624b134472bdd75f2f57f98434d79dfddd21f8035fe555d4136d4025"
++    },
++    {
++      "source": "payload/.codex/tools/goal_guard.py",
++      "destination": ".codex/tools/goal_guard.py",
++      "legacy_path": ".codex/tools/goal_guard.py",
++      "mode": "managed-file",
++      "sha256": "0ca1a3fc7d7220a0ba8d51f6ec16d6d5af3ce3bbcd837a64a73e683e630400a6"
+     },
+     {
+       "source": "payload/AGENTS.md",
+       "destination": "AGENTS.md",
+       "legacy_path": "AGENTS.md",
+       "mode": "agents-block",
+-      "sha256": "f365ae1d67a8f751ba0e0497f4147dd00ee9ef791de68a81de3852c3d3710532"
++      "sha256": "5dcdc8a3c542448d48102900586019af6eb490e4427aec229c82cb6361caf16c"
+     },
+     {
+       "source": "payload/START.txt",
+       "destination": ".codex/RESEARCH_START.txt",
+       "legacy_path": "START.txt",
+       "mode": "managed-file",
+-      "sha256": "2c56452650217fe6b0c3f414eb609e6323df90f4ab027ee28def7f9c577c6f62"
++      "sha256": "5dde87e642efc57e915c67ad88de142dfd74b1e85a855ed65db5f114f0674bb7"
++    },
++    {
++      "source": "payload/examples/GOAL_EXAMPLE.md",
++      "destination": ".codex/GOAL_EXAMPLE.md",
++      "legacy_path": ".codex/GOAL_EXAMPLE.md",
++      "mode": "managed-file",
++      "sha256": "70edd20a3e0d427e3f03a9582257264be5c0fb908e57b08d8fd53e410c599eee"
+     },
+     {
+       "source": "payload/experiments/_templates/REPORT.md",
+@@ -86,12 +121,47 @@
+       "mode": "managed-file",
+       "sha256": "ceb03dd36fed6854cf7399b7654d531adaedf364bd9bd4bf6d5639c1810996fb"
+     },
++    {
++      "source": "payload/research/GOAL_CONFIG.md",
++      "destination": "research/GOAL_CONFIG.md",
++      "legacy_path": "research/GOAL_CONFIG.md",
++      "mode": "create-only",
++      "sha256": "44d1959fa5605d2f1a780929a22529b70036fb513c5f74159c5cb73387d0a7c8"
++    },
+     {
+       "source": "payload/research/STATE.md",
+       "destination": "research/STATE.md",
+       "legacy_path": "research/STATE.md",
+       "mode": "create-only",
+-      "sha256": "15f1a8ff1d6cf937b6b1ae2ade8101ced6ea34a0205fd2006f9d498f2d0e94be"
++      "sha256": "a97949d8690d7ff63c8a1aad8641719e1d7e869861a2733aa4b32e26fc7c4f83"
++    },
++    {
++      "source": "payload/research/_templates/CANDIDATE.md",
++      "destination": "research/_templates/CANDIDATE.md",
++      "legacy_path": "research/_templates/CANDIDATE.md",
++      "mode": "managed-file",
++      "sha256": "149a531a6d0819f7ca49ae4225778f8ef5240541e4e2663e645891d7360faf65"
++    },
++    {
++      "source": "payload/research/_templates/GOAL_CONFIG.md",
++      "destination": "research/_templates/GOAL_CONFIG.md",
++      "legacy_path": "research/_templates/GOAL_CONFIG.md",
++      "mode": "managed-file",
++      "sha256": "44d1959fa5605d2f1a780929a22529b70036fb513c5f74159c5cb73387d0a7c8"
++    },
++    {
++      "source": "payload/research/_templates/GOAL_PROGRESS.md",
++      "destination": "research/_templates/GOAL_PROGRESS.md",
++      "legacy_path": "research/_templates/GOAL_PROGRESS.md",
++      "mode": "managed-file",
++      "sha256": "4cd3902e25e7e054c499551135e49d72ccca381c2e6d4cdb024d5909e6b688aa"
++    },
++    {
++      "source": "payload/research/_templates/PROXY_CONTRACT.md",
++      "destination": "research/_templates/PROXY_CONTRACT.md",
++      "legacy_path": "research/_templates/PROXY_CONTRACT.md",
++      "mode": "managed-file",
++      "sha256": "b911e4bb16e3df04cc88fca3f4b17866291aa932ab2b2ba7eaa7cf15fe5c216c"
+     }
+   ]
+ }
+diff --git a/payload/.codex/VERIFY_SETUP.md b/payload/.codex/VERIFY_SETUP.md
+index 5a9a730..01c5270 100644
+--- a/payload/.codex/VERIFY_SETUP.md
++++ b/payload/.codex/VERIFY_SETUP.md
+@@ -44,3 +44,19 @@
+ 결과는 FILES / DELEGATION / EFFORT / LIMITATIONS로 간단히 정리한다.
+ 설정 실패를 해결하려고 model·권한·trust를 임의 변경하거나 무거운 실험을 실행하지 않는다.
+ 이후 사용자가 연구 시작까지 요청했다면 .codex/RESEARCH_START.txt에 따른다.
++
++## 선택적 Goal 설치 확인
++- `.codex/guides/goal.md`, guard, 사용자 GOAL_CONFIG(create-only), template, supervisor/qa TOML의 존재를 확인한다.
++  새 기본 양식은 disabled/unset이며 검증 실패가 정상이다. 기존 작성본/STATE/goal history는 보존한다.
++- 역할 파일은 name/description/developer_instructions이며 model/effort pin이 없어야 한다.
++  Main 제외3슬롯에 Engineer+QA+Supervisor를 공유하며 single writer는1명이다.
++- 사용자가 goal 역할 runtime 확인까지 요청하면 코드를 실행하지 않는 inspect를 역할별 한 번만
++  순차 위임한다. QA는 반복 규칙 확인 medium, 최초 evaluator 검토 high; Supervisor routine high,
++  중요한 채택/유망방향 기각/논쟁적 기각/방향변경/수학판단 xhigh. 실제 spawn으로 선택한다.
++  Thread effort 변경을 followup으로 주장하지 않는다. 필요한 역할이 없으면 해당 gate UNVERIFIED다.
++- 요청/관측 effort·실제 결과 수신을 구분한다. 역할 답변은 장기 독립성/과학적 정확성 증명이 아니다.
++  검증 요청 없이 새 role을 호출하거나 goal을 시작하지 않는다.
++- Helper는 metadata validation/freeze/reservation ledger이며 experiment runner/OS sandbox가 아니다.
++  외부 bounded executor의 exact revision과 실제 enforcement를 QA가 검수해야 light proxy를 반복할 수 있다.
++  미지원 필수 한도는 NEEDS_USER_RUN. 파일 설치/작은 unittest가 runtime·자원강제를 검증하지 않는다.
++  Token/provider 비용은 자동 관측하지 않는다. Goal outcome/연구 품질은 별도 미검증이다.
+diff --git a/payload/.codex/agents/engineer.toml b/payload/.codex/agents/engineer.toml
+index a9f29bf..166affb 100644
+--- a/payload/.codex/agents/engineer.toml
++++ b/payload/.codex/agents/engineer.toml
+@@ -9,6 +9,18 @@ Main 전용 연구 지휘·재위임 규칙은 너에게 적용되지 않는다.
+ 다른 agent나 별도 Codex 세션을 만들지 않는다.
+ 질문·문제·연구적 반론은 main에 반환하며 사용자를 대신해 연구 설계를 바꾸지 않는다.
+ 
++## Goal 위임
++- Goal 과제면 .codex/guides/goal.md, 사용자 config, frozen proxy revision과 ledger를 읽는다.
++  기본 연구에 goal/monk가 독립 적용된다. 사용자 목표/예산 field를 임의로 고치지 않는다.
++- QA와 Supervisor는 독립 reviewer다. 코드 writer는 너 하나이며 검수 evidence를 제공한다.
++  QA 수정 요청은 Main을 통해 받고 evaluator/data/gates를 후보에 맞춰 바꾸지 않는다.
++- 각 작은 검증은 한 named executor만 실행한다. QA가 같은 검증을 반복할 것으로 가정하지 않는다.
++  예약은 실행 권한이 아니며 전체 비용과 검수된 bounded executor 지원을 확인한다.
++- Heavy/unknown/over-budget 검증은 NEEDS_USER_RUN으로 보존하고 가설 기각으로 보고하지 않는다.
++  실패/재시도/pending 기록과 소모 예산은 compaction/새 revision에도 보존한다.
++- Engineer high/xhigh 규칙은 너의 역할에 적용한다. QA medium/high, Supervisor high/xhigh는
++  goal guide의 별도 정책이며 Main이 실제 spawn에서 선택한다.
++
+ ## 실행 경계
+ - 리소스를 많이 쓰는 최종 실제 테스트·실험은 USER-ONLY다.
+   너는 작고 빠르며 부작용 없는 local test만 직접 실행한다.
+diff --git a/payload/.codex/config.toml b/payload/.codex/config.toml
+index 56a1a55..7e81287 100644
+--- a/payload/.codex/config.toml
++++ b/payload/.codex/config.toml
+@@ -5,6 +5,7 @@
+ enabled = true
+ max_concurrent_threads_per_session = 3
+ 
+-# Default only: main selects high or xhigh using the actual spawn setting.
+-# Keep model_reasoning_effort unset in .codex/agents/engineer.toml.
++# Default only: Engineer high/xhigh, QA medium/high, Supervisor high/xhigh.
++# Main selects role-appropriate effort in actual spawn arguments; 3 slots exclude Main.
++# Keep model/effort pins unset in engineer, qa, and supervisor role files.
+ default_subagent_reasoning_effort = "high"
+diff --git a/payload/.codex/guides/monk.md b/payload/.codex/guides/monk.md
+index e7a20b4..c0db4a6 100644
+--- a/payload/.codex/guides/monk.md
++++ b/payload/.codex/guides/monk.md
+@@ -133,3 +133,11 @@ USER-ONLY 실행, main의 직접 검수, single-writer와 high/xhigh 규칙은 r
+   main 소유의 STATE·연구 결론·승인된 SPEC를 직접 바꾸지 않는다.
+ - 이 모드는 지침 수준의 정보 사용 정책이다. 검색 도구의 의미 기반 차단이나
+   완전한 문맥 격리를 기술적으로 보장했다고 표현하지 않는다.
++
++## Goal과의 결합
++연구는 기본 동작이며 goal은 자율 진행, monk는 조사 제한으로 독립이다.
++Goal 요청 시 `.codex/guides/goal.md`와 사용자 `research/GOAL_CONFIG.md`를 읽는다.
++기존 STATE의 standard는 monk 꺼짐으로 호환한다. QA/Supervisor에도 같은 조사 범위를 적용한다.
++Goal이 연구 발명·유도·반례 분석을 작업 관리로 대체하지 않는다. 예산 소진은 성공이 아니며,
++무거운 필수 검증은 NEEDS_USER_RUN이다. 기각/보강의 교훈을 다음 연구에 반영하고
++사전 기준을 충족한 서로 다른 후보와 미검증 후보를 구분해 사용자에게 남긴다.
+diff --git a/payload/.codex/guides/research.md b/payload/.codex/guides/research.md
+index 22e2052..20e113c 100644
+--- a/payload/.codex/guides/research.md
++++ b/payload/.codex/guides/research.md
+@@ -126,3 +126,11 @@ Monk에서는 아래의 원문·인접 분야 탐색과 문헌 대조를 monk gu
+   기각·보류 이유와 재검토 조건을
+   다음 세션에서 재사용할 만큼만 STATE나 연결된 연구 노트에 남긴다.
+   기록이 다음 연구 판단에 필요할 때 갱신하고, 모든 응답에 새 문서를 만들지 않는다.
++
++## Goal과의 결합
++연구는 기본 동작이며 goal은 자율 진행, monk는 조사 제한으로 독립이다.
++Goal 요청 시 `.codex/guides/goal.md`와 사용자 `research/GOAL_CONFIG.md`를 읽는다.
++기존 STATE의 standard는 monk 꺼짐으로 호환한다. QA/Supervisor에도 같은 조사 범위를 적용한다.
++Goal이 연구 발명·유도·반례 분석을 작업 관리로 대체하지 않는다. 예산 소진은 성공이 아니며,
++무거운 필수 검증은 NEEDS_USER_RUN이다. 기각/보강의 교훈을 다음 연구에 반영하고
++사전 기준을 충족한 서로 다른 후보와 미검증 후보를 구분해 사용자에게 남긴다.
+diff --git a/payload/AGENTS.md b/payload/AGENTS.md
+index f8fe87b..61fb9f2 100644
+--- a/payload/AGENTS.md
++++ b/payload/AGENTS.md
+@@ -41,6 +41,30 @@
+   사용자가 선행연구 대조나 standard 전환을 요청하면 그 범위를 기록해 전환한다.
+   역할·실행 권한·모델·effort 설정은 기존 규칙을 따른다.
+ 
++## 공통: 선택적 goal / monk overlay
++- 연구는 기본 동작이다. Goal은 연구→작은 판별 검증→채택/기각/보강→다음 연구를
++  사용자의 ultimate goal까지 이어가는 자율 진행 overlay이고, monk는 독립적인 조사 제한이다.
++  새 양식은 `goal.enabled`와 `goal.monk`를 사용한다. 기존 STATE의 standard는 monk 꺼짐,
++  monk는 켜짐으로 호환해서 읽는다. 별도 native Codex mode key를 추가하지 않는다.
++- Goal 요청 시 `.codex/guides/goal.md`를 직접 읽고 사용자 작성 `research/GOAL_CONFIG.md`,
++  frozen task-specific proxy와 자원·권한·독립 QA를 확인한다. 설치/양식 작성은 시작 요청이 아니다.
++- Main은 연구 발명·수학적 분석과 직접 코드 검수를 계속 맡는다. Engineer는 단일 writer,
++  QA는 명세/코드/실제 evidence의 독립 유효성 검수, Supervisor는 기여·근거·목표 적합성 판단이다.
++  QA/Supervisor는 추가 agent를 생성하지 않는다. 사용자의 최종 테스트 선택을 대신하지 않는다.
++- Goal의 Engineer1+QA1+Supervisor1은 Main 제외 동일3 subagent 슬롯을 공유한다.
++  아래 일반 최대3 Engineer 규칙을 goal에서 3 Engineer+2 reviewer로 확대하지 않는다.
++- Engineer effort high/xhigh는 유지한다. QA 반복조건/로그는 medium, 최초 evaluator·metric/split·
++  수학적 유효성은 high. Supervisor routine은 high, 최종 shortlist 채택·유망 방향 기각·
++  논쟁적 과학 기각·중요한 방향 변경·결정적 수학 판단은 xhigh다. 실제 spawn으로 선택하고
++  model/effort pin 없이 기존 model과 Main 설정을 보존한다. Thread 재사용은 effort 변경이 아니다.
++- 실행 상태·QA validity·가설 판정을 분리한다. Heavy/unknown/over-budget 검증은 NEEDS_USER_RUN이며
++  과학적 기각이 아니다. 예산 소진·후보 부족은 GOAL_MET가 아니다. 목표의 모든 조건과 evidence class,
++  독립 QA/Supervisor 근거·mechanism 중복 제거를 확인해야 한다. Monk novelty는 미확인으로 남긴다.
++- Helper는 bounded snapshot/예약 ledger이며 runner·OS sandbox·provider billing 강제가 아니다.
++  검수된 별도 bounded executor가 있으면 허용된 light proxy를 반복할 수 있다. 필수 한도 미지원은
++  해당 실험을 NEEDS_USER_RUN으로 남기고, 독립적으로 가능한 연구/검토는 유한 예산 안에서 이어간다.
++  Single-writer와 USER_ONLY는 goal에서도 유지하며 compaction/재시도에 예산·실패 기록을 초기화하지 않는다.
++
+ ## 공통: 실행 권한 — 무거운 최종 검증은 USER-ONLY
+ - Agent가 실행할 수 있는 것은 작고 빠르며 기존 환경·데이터에 영향을 주지 않는
+   가벼운 local test뿐이다. 작은 합성 입력, 최소 재현, 단순 기준 구현을 우선한다.
+diff --git a/payload/START.txt b/payload/START.txt
+index 23928d6..f84fe73 100644
+--- a/payload/START.txt
++++ b/payload/START.txt
+@@ -41,3 +41,12 @@ engineer.toml에 effort를 고정하거나, 후속 메시지만으로 effort가
+ 이 초기 상태 파악에서는 기존 코드·테스트를 수정하거나 실험을 실행하지 마.
+ 초기 상태 파악의 짧은 보고를 이후 연구 발전 요청의 깊이에 대한 제한으로 쓰지 마.
+ Engineer 등록·위임 기능이 실제로 사용 가능하지 않으면 그 사실을 알려줘.
++
++Goal을 요청하면 .codex/guides/goal.md와 사용자가 작성한 research/GOAL_CONFIG.md를 읽어.
++연구는 기본 동작이고 goal과 monk는 독립 옵션이야. 기존 standard/monk STATE는 호환해서 복원해.
++목표까지 연구·작은 판별 검증·채택/기각/보강을 반복하되, 비용 미확인/무거운 검증은
++NEEDS_USER_RUN, 예산 중단은 목표 미달로 남겨. 독립 QA와 Supervisor 근거를 확보하고
++서로 다른 후보 shortlist와 필요한 최종 테스트를 내가 고를 수 있게 전달해.
++Helper는 실행기가 아니므로 실제 외부 bounded executor 검수와 자원 강제 가능 범위를 확인해.
++Goal의 effort: QA medium/새 평가 경로 high, Supervisor routine high/중요 채택·기각·방향변경·수학판단 xhigh.
++Engineer high/xhigh 유지, 세 역할이 Main 제외3슬롯 공유, 코드 writer1명. 실제 spawn 선택을 기록해.
+diff --git a/payload/research/STATE.md b/payload/research/STATE.md
+index 2712e1f..a220dcf 100644
+--- a/payload/research/STATE.md
++++ b/payload/research/STATE.md
+@@ -70,3 +70,11 @@ Keep the mode separate from the task type and preserve earlier exposure and find
+ - SPEC / REPORT / RUNBOOK:
+ - Raw artifact와 재현 정보:
+ - 과거 결정·실험 기록:
++
++## 선택적 Goal 상태
++- Goal enabled / monk boolean: (기존 standard는 monk=false로 호환)
++- 사용자 시작 요청 / ultimate-goal predicate / config·frozen proxy·ledger revision:
++- 독립 QA/Supervisor thread·requested/resolved effort / 남은 호출·검토 예산:
++- Shortlist·mechanism/lineage 중복 제거 / 사용자 기준 충족 근거:
++- GOAL_MET 여부 / 미달 중단 사유 / pending NEEDS_USER_RUN:
++- 상세 progress·candidate evidence 링크 / pending reservations와 다음 책임자:
+diff --git a/scripts/install.py b/scripts/install.py
+index 4909f3d..f9fe85c 100644
+--- a/scripts/install.py
++++ b/scripts/install.py
+@@ -31,6 +31,7 @@ META = ".codex/research-workflow-install.json"
+ BACKUPS = ".codex/research-workflow-backups"
+ SETTINGS = {"enabled": True, "max_concurrent_threads_per_session": 3,
+             "default_subagent_reasoning_effort": "high"}
++ROLES = ("engineer", "supervisor", "qa")
+ IGNORE_BEGIN = "# BEGIN CODEX RESEARCH WORKFLOW"
+ IGNORE_END = "# END CODEX RESEARCH WORKFLOW"
+ IGNORE = f"{IGNORE_BEGIN}\n/{BACKUPS}/\n{IGNORE_END}"
+@@ -108,8 +109,9 @@ def merge_config(text: str) -> str:
+     agents = before.get("agents", {})
+     if not isinstance(agents, dict):
+         raise Conflict("[agents] is not a table")
+-    if "engineer" in agents:
+-        raise Conflict("Legacy [agents.engineer] registration exists; review it before installing a standalone engineer")
++    for role in ROLES:
++        if role in agents:
++            raise Conflict(f"Legacy [agents.{role}] registration exists; review it before installing a standalone role")
+     desired = copy.deepcopy(before)
+     desired.setdefault("agents", {}).update(SETTINGS)
+     desired["agents"].pop("max_threads", None)
+@@ -194,11 +196,11 @@ def make_plan(target: Path, revision: str) -> tuple[list[tuple[str, bytes | None
+     agents_dir = safe_path(target, ".codex/agents")
+     if agents_dir.is_dir():
+         for file in agents_dir.glob("*.toml"):
+-            if file.name == "engineer.toml":
++            if file.name in {role + ".toml" for role in ROLES}:
+                 continue
+             other = load_toml(decode(read_bytes(safe_path(target, str(file.relative_to(target))))), str(file))
+-            if other.get("name") == "engineer":
+-                raise Conflict(f"Duplicate project-scoped engineer role: {file.name}")
++            if other.get("name") in ROLES:
++                raise Conflict(f'Duplicate project-scoped {other["name"]} role: {file.name}')
+     tracked = previous.get("installed_hashes", {})
+     changes, notices, hashes = [], [], {}
+     for item in manifest["files"]:
+@@ -254,7 +256,7 @@ def make_plan(target: Path, revision: str) -> tuple[list[tuple[str, bytes | None
+     config = load_toml(decode(next((n for r, _, n in changes if r == ".codex/config.toml"),
+                                   read_bytes(safe_path(target, ".codex/config.toml")) or b"")), "config")
+     if config.get("agents", {}).get("default_subagent_model"):
+-        notices.append("ATTENTION: an existing default_subagent_model was preserved; inspect the effective engineer model")
++        notices.append("ATTENTION: an existing default_subagent_model was preserved; inspect the effective subagent models")
+     return changes, notices
+ 
+ 
+@@ -315,16 +317,17 @@ def check(target: Path) -> int:
+     for key, desired in SETTINGS.items():
+         if config.get("agents", {}).get(key) != desired:
+             errors.append(f"agents.{key} must equal {desired!r}")
+-    if "max_threads" in config.get("agents", {}) or "engineer" in config.get("agents", {}):
+-        errors.append("Legacy agents.max_threads / agents.engineer registration requires review")
+-    agent = load_toml(decode(read_bytes(safe_path(target, ".codex/agents/engineer.toml"))), "engineer")
+-    for key in ("name", "description", "developer_instructions"):
+-        if not agent.get(key):
+-            errors.append(f"Missing custom-agent field {key}")
+-    if agent.get("name") != "engineer":
+-        errors.append("Custom-agent name must be engineer")
+-    if "model_reasoning_effort" in agent:
+-        errors.append("Remove pinned engineer.model_reasoning_effort to allow main's spawn selection")
++    if "max_threads" in config.get("agents", {}) or any(role in config.get("agents", {}) for role in ROLES):
++        errors.append("Legacy agents.max_threads / managed role registration requires review")
++    for role in ROLES:
++        agent = load_toml(decode(read_bytes(safe_path(target, f".codex/agents/{role}.toml"))), role)
++        for key in ("name", "description", "developer_instructions"):
++            if not isinstance(agent.get(key), str) or not agent[key].strip():
++                errors.append(f"Missing custom-agent field {role}.{key}")
++        if agent.get("name") != role:
++            errors.append(f"Custom-agent name must be {role}")
++        if "model_reasoning_effort" in agent:
++            errors.append(f"Remove pinned {role}.model_reasoning_effort to allow main's spawn selection")
+     text = decode(read_bytes(safe_path(target, "AGENTS.md")))
+     span = block(text, BEGIN, END)
+     if span is None:
+@@ -340,18 +343,18 @@ def check(target: Path) -> int:
+     agents_dir = safe_path(target, ".codex/agents")
+     if agents_dir.is_dir():
+         for file in agents_dir.glob("*.toml"):
+-            if file.name == "engineer.toml":
++            if file.name in {role + ".toml" for role in ROLES}:
+                 continue
+             other = load_toml(decode(read_bytes(safe_path(target, str(file.relative_to(target))))), str(file))
+-            if other.get("name") == "engineer":
+-                errors.append(f"Duplicate project-scoped engineer role: {file.name}")
++            if other.get("name") in ROLES:
++                errors.append(f'Duplicate project-scoped {other["name"]} role: {file.name}')
+     for note in notes:
+         print("REVIEW " + note)
+     for error in errors:
+         print("FAIL " + error)
+     if errors:
+         return 2
+-    print("PASS local file presence, TOML, role name, project defaults, and unpinned engineer effort")
++    print("PASS local file presence, TOML, role name, project defaults, and unpinned managed-role efforts")
+     print("NOT_CHECKED effective global/profile overrides, trust, active instruction chain, runtime agent registration or actual spawn effort")
+     print("NEXT restart Codex in the target project, then read .codex/VERIFY_SETUP.md")
+     return 0

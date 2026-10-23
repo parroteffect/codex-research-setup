@@ -1,0 +1,26 @@
+ M AGENTS.md
+ M BOOTSTRAP.md
+ M README.md
+ M VERSION
+ M legacy-hashes.json
+ M manifest.json
+ M payload/.codex/VERIFY_SETUP.md
+ M payload/.codex/agents/engineer.toml
+ M payload/.codex/config.toml
+ M payload/.codex/guides/monk.md
+ M payload/.codex/guides/research.md
+ M payload/AGENTS.md
+ M payload/START.txt
+ M payload/research/STATE.md
+ M scripts/install.py
+ M tests/test_install.py
+?? payload/.codex/agents/qa.toml
+?? payload/.codex/agents/supervisor.toml
+?? payload/.codex/guides/goal.md
+?? payload/.codex/tools/
+?? payload/examples/
+?? payload/research/GOAL_CONFIG.md
+?? payload/research/_templates/
+?? tests/test_goal_guard.py
+?? tests/test_goal_install.py
+?? validation/

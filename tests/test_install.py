@@ -141,6 +141,54 @@ class InstallerTests(unittest.TestCase):
         with self.assertRaises(installer.Conflict):
             installer.make_plan(self.target, "test")
 
+    def test_unknown_block_without_metadata_or_block_hash_preserves_every_file(self):
+        self.install()
+        agents = self.target / "AGENTS.md"
+        agents.write_text("Outside before\n" + agents.read_text().replace(
+            "# Research workflow", "# Research workflow\nLocal rule must survive") + "Outside after\n")
+        meta = self.target / installer.META
+        metadata = json.loads(meta.read_text())
+        metadata.pop("agents_block_hash")
+        meta.write_text(json.dumps(metadata))
+        for metadata_exists in (True, False):
+            if not metadata_exists:
+                meta.unlink()
+            before = self.snapshot()
+            with self.subTest(metadata_exists=metadata_exists), self.assertRaises(installer.Conflict):
+                installer.make_plan(self.target, "test")
+            self.assertEqual(before, self.snapshot())
+
+    def test_current_block_without_metadata_preserves_outside_text(self):
+        self.install()
+        (self.target / installer.META).unlink()
+        agents = self.target / "AGENTS.md"
+        original = "Outside before\n" + agents.read_text() + "Outside after\n"
+        agents.write_text(original)
+        self.install()
+        self.assertEqual(agents.read_text(), original)
+
+    def test_clean_legacy_marked_block_without_metadata_upgrades(self):
+        manifest, legacy, payload = installer.read_package()
+        old_payload = "# Research workflow\nVerified pristine release\n"
+        legacy = copy.deepcopy(legacy)
+        legacy["AGENTS.md"].append(installer.digest(old_payload.encode()))
+        self.write("AGENTS.md", "Outside before\n" + installer.BEGIN + "\n" + old_payload +
+                   installer.END + "\nOutside after\n")
+        with patch.object(installer, "read_package", return_value=(manifest, legacy, payload)):
+            self.install()
+        current = (self.target / "AGENTS.md").read_text()
+        self.assertTrue(current.startswith("Outside before\n"))
+        self.assertTrue(current.endswith("\nOutside after\n"))
+        self.assertNotIn("Verified pristine release", current)
+
+    def test_recorded_clean_block_upgrades_even_when_not_known_legacy(self):
+        manifest, legacy, payload = installer.read_package()
+        old_payload = dict(payload, **{"AGENTS.md": b"# Recorded earlier workflow\n"})
+        with patch.object(installer, "read_package", return_value=(manifest, legacy, old_payload)):
+            self.install()
+        self.install()
+        self.assertIn("# Research workflow", (self.target / "AGENTS.md").read_text())
+
     def test_inline_agents_fails_closed(self):
         text = 'model="keep"\nagents={enabled=false}\n'
         self.write(".codex/config.toml", text)

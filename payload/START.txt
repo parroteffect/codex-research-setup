@@ -41,3 +41,16 @@ engineer.toml에 effort를 고정하거나, 후속 메시지만으로 effort가 
 이 초기 상태 파악에서는 기존 코드·테스트를 수정하거나 실험을 실행하지 마.
 초기 상태 파악의 짧은 보고를 이후 연구 발전 요청의 깊이에 대한 제한으로 쓰지 마.
 Engineer 등록·위임 기능이 실제로 사용 가능하지 않으면 그 사실을 알려줘.
+
+Goal을 요청하면 .codex/guides/goal.md와 사용자가 작성한 research/GOAL_CONFIG.md를 읽어.
+연구는 기본 동작이고 goal과 monk는 독립 옵션이야. 기존 standard/monk STATE는 호환해서 복원해.
+목표까지 연구·작은 판별 검증·채택/기각/보강을 반복하되, 비용 미확인/무거운 검증은
+NEEDS_USER_RUN, 예산 중단은 목표 미달로 남겨. 독립 QA와 Supervisor 근거를 확보하고
+서로 다른 후보 shortlist와 필요한 최종 테스트를 내가 고를 수 있게 전달해.
+Helper는 실행기가 아니므로 실제 외부 bounded executor 검수와 자원 강제 가능 범위를 확인해.
+Goal의 effort: QA medium/새 평가 경로 high, Supervisor routine high/중요 채택·기각·방향변경·수학판단 xhigh.
+Engineer high/xhigh 유지, 세 역할이 Main 제외3슬롯 공유, 코드 writer1명. 실제 spawn 선택을 기록해.
+
+Goal proxy 준비 전에 별도 사용자 SETUP 배정과 GOAL_SETUP 기록을 확인해.
+SETUP 완료·QA·참조 artifact 불변 확인 뒤 RUN init하고, 준비비용과 RUN비용을 함께 보여줘.
+SETUP Markdown은 운영 검수이며 guard 강제가 아니야. 단일 총액을 임의 분할/추가하지 마.

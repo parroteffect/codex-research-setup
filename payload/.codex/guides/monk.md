@@ -133,3 +133,11 @@ USER-ONLY 실행, main의 직접 검수, single-writer와 high/xhigh 규칙은 r
   main 소유의 STATE·연구 결론·승인된 SPEC를 직접 바꾸지 않는다.
 - 이 모드는 지침 수준의 정보 사용 정책이다. 검색 도구의 의미 기반 차단이나
   완전한 문맥 격리를 기술적으로 보장했다고 표현하지 않는다.
+
+## Goal과의 결합
+연구는 기본 동작이며 goal은 자율 진행, monk는 조사 제한으로 독립이다.
+Goal 요청 시 `.codex/guides/goal.md`와 사용자 `research/GOAL_CONFIG.md`를 읽는다.
+기존 STATE의 standard는 monk 꺼짐으로 호환한다. QA/Supervisor에도 같은 조사 범위를 적용한다.
+Goal이 연구 발명·유도·반례 분석을 작업 관리로 대체하지 않는다. 예산 소진은 성공이 아니며,
+무거운 필수 검증은 NEEDS_USER_RUN이다. 기각/보강의 교훈을 다음 연구에 반영하고
+사전 기준을 충족한 서로 다른 후보와 미검증 후보를 구분해 사용자에게 남긴다.

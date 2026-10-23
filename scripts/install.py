@@ -31,6 +31,7 @@ META = ".codex/research-workflow-install.json"
 BACKUPS = ".codex/research-workflow-backups"
 SETTINGS = {"enabled": True, "max_concurrent_threads_per_session": 3,
             "default_subagent_reasoning_effort": "high"}
+ROLES = ("engineer", "supervisor", "qa")
 IGNORE_BEGIN = "# BEGIN CODEX RESEARCH WORKFLOW"
 IGNORE_END = "# END CODEX RESEARCH WORKFLOW"
 IGNORE = f"{IGNORE_BEGIN}\n/{BACKUPS}/\n{IGNORE_END}"
@@ -108,8 +109,9 @@ def merge_config(text: str) -> str:
     agents = before.get("agents", {})
     if not isinstance(agents, dict):
         raise Conflict("[agents] is not a table")
-    if "engineer" in agents:
-        raise Conflict("Legacy [agents.engineer] registration exists; review it before installing a standalone engineer")
+    for role in ROLES:
+        if role in agents:
+            raise Conflict(f"Legacy [agents.{role}] registration exists; review it before installing a standalone role")
     desired = copy.deepcopy(before)
     desired.setdefault("agents", {}).update(SETTINGS)
     desired["agents"].pop("max_threads", None)
@@ -194,11 +196,11 @@ def make_plan(target: Path, revision: str) -> tuple[list[tuple[str, bytes | None
     agents_dir = safe_path(target, ".codex/agents")
     if agents_dir.is_dir():
         for file in agents_dir.glob("*.toml"):
-            if file.name == "engineer.toml":
+            if file.name in {role + ".toml" for role in ROLES}:
                 continue
             other = load_toml(decode(read_bytes(safe_path(target, str(file.relative_to(target))))), str(file))
-            if other.get("name") == "engineer":
-                raise Conflict(f"Duplicate project-scoped engineer role: {file.name}")
+            if other.get("name") in ROLES:
+                raise Conflict(f'Duplicate project-scoped {other["name"]} role: {file.name}')
     tracked = previous.get("installed_hashes", {})
     changes, notices, hashes = [], [], {}
     for item in manifest["files"]:
@@ -218,10 +220,17 @@ def make_plan(target: Path, revision: str) -> tuple[list[tuple[str, bytes | None
             elif not span and text.startswith("# Research workflow"):
                 raise Conflict("Unmanaged edited legacy AGENTS.md; migrate it manually, preserving project rules")
             else:
-                if span and previous.get("agents_block_hash"):
-                    actual = digest(text[span[0]:span[1]].encode())
-                    if actual != previous["agents_block_hash"] and text[span[0]:span[1]] != content:
-                        raise Conflict("Managed AGENTS.md block has local edits; review them before update")
+                if span:
+                    existing_block = text[span[0]:span[1]]
+                    actual = digest(existing_block.encode())
+                    # Markers alone are not provenance. Older pristine payloads used one
+                    # trailing newline; do not normalize arbitrary edits into a match.
+                    body = existing_block[len(BEGIN):-len(END)]
+                    pristine_legacy = (body.startswith("\n") and body.endswith("\n") and
+                                       digest(body[1:].encode()) in legacy.get("AGENTS.md", []))
+                    if (existing_block != content and actual != previous.get("agents_block_hash")
+                            and not pristine_legacy):
+                        raise Conflict("Managed AGENTS.md block has local edits or unknown provenance; preserve and merge it manually")
                 new = append_or_replace(text, content, BEGIN, END).encode()
         elif mode == "toml-merge":
             new = merge_config(decode(old)).encode() if old is not None else new
@@ -254,7 +263,7 @@ def make_plan(target: Path, revision: str) -> tuple[list[tuple[str, bytes | None
     config = load_toml(decode(next((n for r, _, n in changes if r == ".codex/config.toml"),
                                   read_bytes(safe_path(target, ".codex/config.toml")) or b"")), "config")
     if config.get("agents", {}).get("default_subagent_model"):
-        notices.append("ATTENTION: an existing default_subagent_model was preserved; inspect the effective engineer model")
+        notices.append("ATTENTION: an existing default_subagent_model was preserved; inspect the effective subagent models")
     return changes, notices
 
 
@@ -315,16 +324,17 @@ def check(target: Path) -> int:
     for key, desired in SETTINGS.items():
         if config.get("agents", {}).get(key) != desired:
             errors.append(f"agents.{key} must equal {desired!r}")
-    if "max_threads" in config.get("agents", {}) or "engineer" in config.get("agents", {}):
-        errors.append("Legacy agents.max_threads / agents.engineer registration requires review")
-    agent = load_toml(decode(read_bytes(safe_path(target, ".codex/agents/engineer.toml"))), "engineer")
-    for key in ("name", "description", "developer_instructions"):
-        if not agent.get(key):
-            errors.append(f"Missing custom-agent field {key}")
-    if agent.get("name") != "engineer":
-        errors.append("Custom-agent name must be engineer")
-    if "model_reasoning_effort" in agent:
-        errors.append("Remove pinned engineer.model_reasoning_effort to allow main's spawn selection")
+    if "max_threads" in config.get("agents", {}) or any(role in config.get("agents", {}) for role in ROLES):
+        errors.append("Legacy agents.max_threads / managed role registration requires review")
+    for role in ROLES:
+        agent = load_toml(decode(read_bytes(safe_path(target, f".codex/agents/{role}.toml"))), role)
+        for key in ("name", "description", "developer_instructions"):
+            if not isinstance(agent.get(key), str) or not agent[key].strip():
+                errors.append(f"Missing custom-agent field {role}.{key}")
+        if agent.get("name") != role:
+            errors.append(f"Custom-agent name must be {role}")
+        if "model_reasoning_effort" in agent:
+            errors.append(f"Remove pinned {role}.model_reasoning_effort to allow main's spawn selection")
     text = decode(read_bytes(safe_path(target, "AGENTS.md")))
     span = block(text, BEGIN, END)
     if span is None:
@@ -340,18 +350,18 @@ def check(target: Path) -> int:
     agents_dir = safe_path(target, ".codex/agents")
     if agents_dir.is_dir():
         for file in agents_dir.glob("*.toml"):
-            if file.name == "engineer.toml":
+            if file.name in {role + ".toml" for role in ROLES}:
                 continue
             other = load_toml(decode(read_bytes(safe_path(target, str(file.relative_to(target))))), str(file))
-            if other.get("name") == "engineer":
-                errors.append(f"Duplicate project-scoped engineer role: {file.name}")
+            if other.get("name") in ROLES:
+                errors.append(f'Duplicate project-scoped {other["name"]} role: {file.name}')
     for note in notes:
         print("REVIEW " + note)
     for error in errors:
         print("FAIL " + error)
     if errors:
         return 2
-    print("PASS local file presence, TOML, role name, project defaults, and unpinned engineer effort")
+    print("PASS local file presence, TOML, role name, project defaults, and unpinned managed-role efforts")
     print("NOT_CHECKED effective global/profile overrides, trust, active instruction chain, runtime agent registration or actual spawn effort")
     print("NEXT restart Codex in the target project, then read .codex/VERIFY_SETUP.md")
     return 0

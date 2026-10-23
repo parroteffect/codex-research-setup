@@ -70,3 +70,11 @@ Keep the mode separate from the task type and preserve earlier exposure and find
 - SPEC / REPORT / RUNBOOK:
 - Raw artifact와 재현 정보:
 - 과거 결정·실험 기록:
+
+## 선택적 Goal 상태
+- Goal enabled / monk boolean: (기존 standard는 monk=false로 호환)
+- 사용자 시작 요청 / ultimate-goal predicate / config·frozen proxy·ledger revision:
+- 독립 QA/Supervisor thread·requested/resolved effort / 남은 호출·검토 예산:
+- Shortlist·mechanism/lineage 중복 제거 / 사용자 기준 충족 근거:
+- GOAL_MET 여부 / 미달 중단 사유 / pending NEEDS_USER_RUN:
+- 상세 progress·candidate evidence 링크 / pending reservations와 다음 책임자:

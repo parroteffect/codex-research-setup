@@ -93,8 +93,8 @@ python3 /path/to/source/scripts/install.py --target /path/to/research-project --
 |---|---|
 | `AGENTS.md` | 기존 프로젝트 내용을 보존하고 managed block 추가/갱신 |
 | `.codex/config.toml` | `[agents]`의 enabled/동시 thread 수/default effort만 병합 |
-| `engineer.toml`, 네 guide, 실험 템플릿 | 신규 생성 또는 확인된 미수정 배포본만 갱신 |
-| `research/STATE.md` | 없을 때만 생성; 기존 파일은 보존 |
+| 세 role TOML, guide/goal 도구, 템플릿 | 신규 생성 또는 확인된 미수정 배포본만 갱신 |
+| `research/STATE.md`, `research/GOAL_CONFIG.md` | 없을 때만 생성; 기존 파일은 보존 |
 | `.codex/RESEARCH_START.txt`, `.codex/VERIFY_SETUP.md` | 프로젝트 안의 시작/검증 지시 |
 | `.gitignore` | 설치 백업 폴더 제외 block만 추가 |
 
@@ -103,6 +103,25 @@ python3 /path/to/source/scripts/install.py --target /path/to/research-project --
 설치 전 원본과 생성 여부는 `.codex/research-workflow-backups/<id>/`에 보존한다.
 백업을 공개 GitHub에 올리지 않는다. 설치는 파일별 atomic replacement이며
 여러 파일 전체에 대한 transaction은 아니다. 중간 오류 시 변경 목록·백업부터 확인한다.
+
+### v5.3.1로 업데이트할 때
+- supervisor/qa standalone role, goal guide/guard, 최신 template를 managed file로 추가한다.
+  name 충돌/legacy [agents.supervisor]/[agents.qa]도 쓰기 전 검토한다. Model/effort pin은 없다.
+- 사용자 `research/GOAL_CONFIG.md`는 create-only다. 기존 작성본·STATE·goal history를 바꾸지 않는다.
+  최신 template와 schema 차이는 설명하고 사용자 승인 없이 예산/목표를 채우거나 migration하지 않는다.
+- 기본 연구 + 독립 goal/monk overlay다. 설치만으로 시작하지 않는다. 기존 standard=monk 꺼짐으로 호환한다.
+- Main 제외3슬롯 유지. Engineer high/xhigh, QA medium/high, Supervisor high/중요판단 xhigh를
+  실제 spawn에서 선택한다. 기존 user model/security를 보존한다. Thread followup은 effort 변경이 아니다.
+- Helper는 검증/기록용이며 runner나 OS sandbox가 아니다. 외부 bounded executor·실제 자원강제·
+  runtime 역할 검증은 NOT_VERIFIED로 남긴다. Heavy/unknown 검증은 NEEDS_USER_RUN/USER_ONLY다.
+- VERSION/manifest의 payload hash를 확인하고 알려진 v5.2/v5.3.0 미수정 파일만 안전하게 갱신한다.
+
+- Managed AGENTS block은 metadata/block hash가 없어도 provenance를 확인한다. 현재 payload·기록된
+  block·검증 가능한 pristine legacy가 아니면 conflict/manual merge다. Marker를 원본 증거로 삼거나
+  metadata를 조작하지 않는다. 원본/밖의 프로젝트 규칙과 백업을 보존한다.
+- GOAL_SETUP template는 managed로 설치하되 사용자 SETUP 작성본·GOAL_CONFIG schema1을 바꾸지 않는다.
+  별도 사용자 SETUP 배정→준비/QA→완료·artifact 확인→RUN init→RUN 예약 순서다.
+  SETUP은 운영 회계이며 guard 강제가 아니다. 단일 총액 분할/추가·배정 이전은 사용자 승인 사항이다.
 
 ### v5.2로 업데이트할 때
 - `.codex/guides/monk.md`를 새 managed file로 설치하고 AGENTS·research guide·시작 안내·

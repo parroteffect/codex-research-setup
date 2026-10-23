@@ -1,69 +1,104 @@
 {
   "package": "codex-research-workflow",
-  "version": "5.2.0",
+  "version": "5.3.2",
   "files": [
     {
       "source": "payload/.codex/VERIFY_SETUP.md",
       "destination": ".codex/VERIFY_SETUP.md",
       "legacy_path": ".codex/VERIFY_SETUP.md",
       "mode": "managed-file",
-      "sha256": "d85d6725c088ae91c3f87961f77344a547a1d96bfe560f3aae52334e08f6476b"
+      "sha256": "06aecd6eb203e19e2230e89e6fef978b11a4723659ace1f35cfad1b77619f997"
     },
     {
       "source": "payload/.codex/agents/engineer.toml",
       "destination": ".codex/agents/engineer.toml",
       "legacy_path": ".codex/agents/engineer.toml",
       "mode": "managed-file",
-      "sha256": "51e3d37c2354c9fb1890fdb538e6f9c67ca4890c24604fb5683266dfdbb94881"
+      "sha256": "7aa4c7166e063caeb4d58630b0ef5f5431e60113295080e6229007d0c6b69b60"
+    },
+    {
+      "source": "payload/.codex/agents/qa.toml",
+      "destination": ".codex/agents/qa.toml",
+      "legacy_path": ".codex/agents/qa.toml",
+      "mode": "managed-file",
+      "sha256": "faf16a469c1aafb619dd5786e32d0d69e29bf8a09393c55b806e1db79551afaa"
+    },
+    {
+      "source": "payload/.codex/agents/supervisor.toml",
+      "destination": ".codex/agents/supervisor.toml",
+      "legacy_path": ".codex/agents/supervisor.toml",
+      "mode": "managed-file",
+      "sha256": "d4779edfc10ce31d06bed30e3cd3edee0db5ba88df4e18af428b06a2d5d6688d"
     },
     {
       "source": "payload/.codex/config.toml",
       "destination": ".codex/config.toml",
       "legacy_path": ".codex/config.toml",
       "mode": "toml-merge",
-      "sha256": "e8c54f9dd11b8842664794da2f232c1812f2157aa66559fb8f11f76a1ae2d4c3"
+      "sha256": "530c1b6e2a64e55ae276628ade9c416be04251204ea5ad8520460facd4cfee64"
     },
     {
       "source": "payload/.codex/guides/code-review.md",
       "destination": ".codex/guides/code-review.md",
       "legacy_path": ".codex/guides/code-review.md",
       "mode": "managed-file",
-      "sha256": "8ebc15b8895ffe442b0c40637a409ff1b30c5f039354c26cbc9d28d50dc2ee4f"
+      "sha256": "e4d208840547b600792c91e65f13e4a12b6bcdbdbdd25111da004449f357a4de"
+    },
+    {
+      "source": "payload/.codex/guides/goal.md",
+      "destination": ".codex/guides/goal.md",
+      "legacy_path": ".codex/guides/goal.md",
+      "mode": "managed-file",
+      "sha256": "6590d529a60176d6bf4cbc8f790f497466d5d057752a7a9718746e2c5c93943a"
     },
     {
       "source": "payload/.codex/guides/implementation.md",
       "destination": ".codex/guides/implementation.md",
       "legacy_path": ".codex/guides/implementation.md",
       "mode": "managed-file",
-      "sha256": "cd8bcd1e42b4e5886bf67b5d4ec587b855864bee00c42c51e6c9e4758ce1f5ca"
+      "sha256": "c101e8c6b5c5fb92ebc0bffe350176c006ebc830a587e8ea4dc8667d67a73198"
     },
     {
       "source": "payload/.codex/guides/monk.md",
       "destination": ".codex/guides/monk.md",
       "legacy_path": ".codex/guides/monk.md",
       "mode": "managed-file",
-      "sha256": "a6dc6d0adb15047235685b69748ec8aafe7f8e1a4bac5bb1056610bc41cae5fd"
+      "sha256": "a13d6d98c929bcd9d3d9ca63115e06d45453bdcf913abf5781f948ccee9f127a"
     },
     {
       "source": "payload/.codex/guides/research.md",
       "destination": ".codex/guides/research.md",
       "legacy_path": ".codex/guides/research.md",
       "mode": "managed-file",
-      "sha256": "9abe9a18eddefe77edc1f491e97332e0879c0d32739c242c0716edda602e904d"
+      "sha256": "b9cb00b3624b134472bdd75f2f57f98434d79dfddd21f8035fe555d4136d4025"
+    },
+    {
+      "source": "payload/.codex/tools/goal_guard.py",
+      "destination": ".codex/tools/goal_guard.py",
+      "legacy_path": ".codex/tools/goal_guard.py",
+      "mode": "managed-file",
+      "sha256": "4f25b7ef81daa1610180113c03b5045e0378b422549241971399a9e9a74a0b47"
     },
     {
       "source": "payload/AGENTS.md",
       "destination": "AGENTS.md",
       "legacy_path": "AGENTS.md",
       "mode": "agents-block",
-      "sha256": "f365ae1d67a8f751ba0e0497f4147dd00ee9ef791de68a81de3852c3d3710532"
+      "sha256": "b24bba9517efe9f012168e253b03a5872ddce2f2581455957530f28fd72101e7"
     },
     {
       "source": "payload/START.txt",
       "destination": ".codex/RESEARCH_START.txt",
       "legacy_path": "START.txt",
       "mode": "managed-file",
-      "sha256": "2c56452650217fe6b0c3f414eb609e6323df90f4ab027ee28def7f9c577c6f62"
+      "sha256": "7ea5186d0292d748c99316c6104a3ac57df36ad0cb67e5d070d3b716dc9dd7e5"
+    },
+    {
+      "source": "payload/examples/GOAL_EXAMPLE.md",
+      "destination": ".codex/GOAL_EXAMPLE.md",
+      "legacy_path": ".codex/GOAL_EXAMPLE.md",
+      "mode": "managed-file",
+      "sha256": "bdd0dd3b0646e35436fd9a79e8f0a1679cfbb7499019cb49348a318b30e63f7a"
     },
     {
       "source": "payload/experiments/_templates/REPORT.md",
@@ -87,11 +122,53 @@
       "sha256": "ceb03dd36fed6854cf7399b7654d531adaedf364bd9bd4bf6d5639c1810996fb"
     },
     {
+      "source": "payload/research/GOAL_CONFIG.md",
+      "destination": "research/GOAL_CONFIG.md",
+      "legacy_path": "research/GOAL_CONFIG.md",
+      "mode": "create-only",
+      "sha256": "3fb1b52f1daff7efdabb7a812d694f862d34349689063c86518e49f859ace250"
+    },
+    {
       "source": "payload/research/STATE.md",
       "destination": "research/STATE.md",
       "legacy_path": "research/STATE.md",
       "mode": "create-only",
-      "sha256": "15f1a8ff1d6cf937b6b1ae2ade8101ced6ea34a0205fd2006f9d498f2d0e94be"
+      "sha256": "a97949d8690d7ff63c8a1aad8641719e1d7e869861a2733aa4b32e26fc7c4f83"
+    },
+    {
+      "source": "payload/research/_templates/CANDIDATE.md",
+      "destination": "research/_templates/CANDIDATE.md",
+      "legacy_path": "research/_templates/CANDIDATE.md",
+      "mode": "managed-file",
+      "sha256": "149a531a6d0819f7ca49ae4225778f8ef5240541e4e2663e645891d7360faf65"
+    },
+    {
+      "source": "payload/research/_templates/GOAL_CONFIG.md",
+      "destination": "research/_templates/GOAL_CONFIG.md",
+      "legacy_path": "research/_templates/GOAL_CONFIG.md",
+      "mode": "managed-file",
+      "sha256": "3fb1b52f1daff7efdabb7a812d694f862d34349689063c86518e49f859ace250"
+    },
+    {
+      "source": "payload/research/_templates/GOAL_PROGRESS.md",
+      "destination": "research/_templates/GOAL_PROGRESS.md",
+      "legacy_path": "research/_templates/GOAL_PROGRESS.md",
+      "mode": "managed-file",
+      "sha256": "6d5f3c237e452535fa83a9e450ecc3bf264eb65620bdec2c7db923450750d013"
+    },
+    {
+      "source": "payload/research/_templates/PROXY_CONTRACT.md",
+      "destination": "research/_templates/PROXY_CONTRACT.md",
+      "legacy_path": "research/_templates/PROXY_CONTRACT.md",
+      "mode": "managed-file",
+      "sha256": "86df781e684d75bdd05bc47476c1905193d7eedea9899991f0fd4457ec1b9194"
+    },
+    {
+      "source": "payload/research/_templates/GOAL_SETUP.md",
+      "destination": "research/_templates/GOAL_SETUP.md",
+      "legacy_path": "research/_templates/GOAL_SETUP.md",
+      "mode": "managed-file",
+      "sha256": "f89450a38288b4fbe98c38b775de2ad7904a069a8bfe7d46b0ea9876fbe5273b"
     }
   ]
 }

@@ -44,3 +44,23 @@
 결과는 FILES / DELEGATION / EFFORT / LIMITATIONS로 간단히 정리한다.
 설정 실패를 해결하려고 model·권한·trust를 임의 변경하거나 무거운 실험을 실행하지 않는다.
 이후 사용자가 연구 시작까지 요청했다면 .codex/RESEARCH_START.txt에 따른다.
+
+## 선택적 Goal 설치 확인
+- `.codex/guides/goal.md`, guard, 사용자 GOAL_CONFIG(create-only), template, supervisor/qa TOML의 존재를 확인한다.
+  새 기본 양식은 disabled/unset이며 검증 실패가 정상이다. 기존 작성본/STATE/goal history는 보존한다.
+- 역할 파일은 name/description/developer_instructions이며 model/effort pin이 없어야 한다.
+  Main 제외3슬롯에 Engineer+QA+Supervisor를 공유하며 single writer는1명이다.
+- 사용자가 goal 역할 runtime 확인까지 요청하면 코드를 실행하지 않는 inspect를 역할별 한 번만
+  순차 위임한다. QA는 반복 규칙 확인 medium, 최초 evaluator 검토 high; Supervisor routine high,
+  중요한 채택/유망방향 기각/논쟁적 기각/방향변경/수학판단 xhigh. 실제 spawn으로 선택한다.
+  Thread effort 변경을 followup으로 주장하지 않는다. 필요한 역할이 없으면 해당 gate UNVERIFIED다.
+- 요청/관측 effort·실제 결과 수신을 구분한다. 역할 답변은 장기 독립성/과학적 정확성 증명이 아니다.
+  검증 요청 없이 새 role을 호출하거나 goal을 시작하지 않는다.
+- Helper는 metadata validation/freeze/reservation ledger이며 experiment runner/OS sandbox가 아니다.
+  외부 bounded executor의 exact revision과 실제 enforcement를 QA가 검수해야 light proxy를 반복할 수 있다.
+  미지원 필수 한도는 NEEDS_USER_RUN. 파일 설치/작은 unittest가 runtime·자원강제를 검증하지 않는다.
+  Token/provider 비용은 자동 관측하지 않는다. Goal outcome/연구 품질은 별도 미검증이다.
+
+- GOAL_SETUP managed template와 별도 사용자 SETUP/RUN 배정·준비/QA→완료→init 순서를 확인한다.
+  SETUP Markdown 회계/시작 gate는 운영 검수이며 guard가 강제·계측하지 않는다.
+  기존 사용자 form의 schema1은 유지하며 준비 비용 확인 없이 init READY를 startup 승인으로 쓰지 않는다.

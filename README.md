@@ -8,7 +8,58 @@ Main의 model/effort는 사용자가 관리합니다. Engineering은 기본 `hig
 Main은 소스 코드·diff·호출부·테스트를 직접 읽고 검수합니다.
 연구에서는 새로운 문제·방법·메커니즘과 핵심 수학적 분석을 직접 발전시킵니다.
 
-## v5.2: Monk mode
+## v5.3.2: 변경 영향에 맞는 준비와 검증
+
+검증된 코드의 재사용은 관련 전제가 유지되는 evidence를 참조하고 변경한 연결부와 영향 범위를
+검수합니다. 작은 실행 연결에 새 실험 폴더·검증 framework·전체 snapshot을 자동으로 추가하지 않습니다.
+필요한 검사가 통과하면 구체적인 새 문제 없이 반복 검증을 늘리지 않고 결과를 전달합니다.
+
+새 조합의 상호작용, 수식·수치·kernel, metric·split·timing·비교 조건의 변경은 충분히 검수합니다.
+수정 줄 수가 작다는 이유로 검증을 축소하지 않습니다. 연구의 깊이, 필수 검사, USER-ONLY와
+Goal의 독립 검수·자원 gate를 유지합니다. 핵심 정책은 [AGENTS](payload/AGENTS.md),
+적용 지침은 [implementation guide](payload/.codex/guides/implementation.md)에 있습니다.
+이 변경은 지침 개선이며 실제 행동의 준수나 준비 시간 단축을 측정한 결과는 아닙니다.
+
+## v5.3.1: Goal overlay와 독립 Supervisor / QA
+
+연구는 기본 동작입니다. **Goal**은 연구→작은 판별 검증→채택/기각/보강→다음 연구를
+사용자의 ultimate goal까지 이어가는 자율 진행 옵션이고, **monk**는 독립적인 조사 제한입니다.
+사용자가 `research/GOAL_CONFIG.md`의 한 TOML block을 작성합니다. CLI 문답은 없습니다.
+새 양식은 `goal.enabled`, `goal.monk`를 쓰며 기존 standard/monk STATE는 호환합니다.
+
+Main은 발명·깊은 수학적 분석과 직접 검수를 계속 수행합니다. Engineer는 단일 writer,
+QA는 비교/evidence 유효성, Supervisor는 기여·근거·목표 적합성을 독립 검토합니다.
+Engineer high/xhigh 유지; QA 반복 검토 medium·최초 evaluator/metric/split/수학 검토 high;
+Supervisor routine high, 중요한 최종 채택·유망 방향 기각·논쟁적 기각·방향변경·수학 판단 xhigh.
+실제 spawn에서 선택하며 model/effort를 role 파일에 pin하지 않습니다.
+Main 제외3 subagent 슬롯을 세 역할이 공유합니다. 모든 반복을 full review하거나 xhigh로 만들지 않습니다.
+
+**설정·기록 도구가 포함되며 experiment runner는 포함되지 않습니다.**
+Guard는 stdlib로 config 검증·frozen proxy·보수적 budget ledger를 제공합니다.
+RAM/VRAM/disk/provider token을 물리적으로 강제하거나 Codex가 없는 동안 실행하지 않습니다.
+QA가 검수한 별도 bounded executor가 있을 때만 허용된 light proxy를 자동 반복할 수 있습니다.
+Heavy/unknown/over-budget/필수 enforcement 미지원은 NEEDS_USER_RUN이며 과학적 기각이 아닙니다.
+그와 독립인 연구/리뷰는 유한 예산 안에서 계속합니다. USER_ONLY heavy 실행은 유지합니다.
+
+처음 목표의 모든 기준, 독립 evidence와 mechanism 중복 제거를 충족해야 GOAL_MET입니다.
+예산 종료나 후보수 미달은 성공이 아닙니다. 최종 shortlist는 사용자에게 최종 테스트 선택권을 남깁니다.
+Monk에서는 문헌 novelty 미확인을 유지합니다. 반복 DEV 최적값을 독립 confirmation으로 부르지 않습니다.
+
+- [Goal 운영/명령/한계](payload/.codex/guides/goal.md)
+- [별도 SETUP 예산·기록](payload/research/_templates/GOAL_SETUP.md)
+- [사용자 작성 양식](payload/research/GOAL_CONFIG.md), [proxy 계약](payload/research/_templates/PROXY_CONTRACT.md)
+- [작은 설명용 예시](payload/examples/GOAL_EXAMPLE.md)
+
+v5.3.1은 준비 비용을 별도 사용자 SETUP 배정으로 명시합니다. SETUP 예약/준비/QA→완료·artifact
+확인→RUN init→RUN 예약 순서이며 RUN TOML/schema1은 그대로입니다. SETUP 기록은 운영상 검수하며
+helper가 강제·계측하지 않습니다. 단일 총액은 사용자 승인 분할이 필요하고 deadline/예산을 임의로 늘리지 않습니다.
+정체 stop은 이력에서 유지하고 progress 응답은 같은 lock에서 계산합니다. Pending마다 bounded FINISH
+공간을 보존하며 metadata 공간 부족과 영구 budget stop을 구분합니다. 상세 한계는 goal guide를 따릅니다.
+
+업데이트는 기존 user config/STATE/goal history를 보존합니다. 새 역할명 충돌·사용자 수정은
+자동 덮어쓰지 않습니다. 설치는 goal을 시작하지 않으며 runtime role 활성화는 새 세션에서 별도 확인합니다.
+
+## v5.2: Monk mode (이전 변경)
 
 Main Research Lead가 연구 과제별로 선택하는 `standard` / `monk` 연구 모드를 추가했습니다.
 기본은 기존 standard이며, monk는 사용자의 선택으로 활성화합니다.
@@ -106,7 +157,7 @@ Python·패키지·Codex 자체를 자동 설치/업데이트하지 않습니다
 |---|---|
 | `BOOTSTRAP.md` | Codex가 읽고 따르는 설치 절차·충돌 처리·종료 조건 |
 | `scripts/install.py` | 네트워크/외부 dependency 없는 설치기. 기본 dry run, `--apply`, `--check` |
-| `payload/` | 설치 대상 AGENTS.md, engineer, 네 guide, 상태·실험 템플릿 |
+| `payload/` | 설치 대상 AGENTS.md, engineer/supervisor/qa, guide와 goal 도구, 상태·실험 템플릿 |
 | `payload/.codex/guides/monk.md` | 독립적인 발상·수학적 연구와 과제별 조사 범위·전환 기준 |
 | `payload/.codex/VERIFY_SETUP.md` | 재시작 후 실제 등록·위임·effort 확인 절차 |
 | `manifest.json` | source→destination, 설치 방식, payload checksum |
@@ -128,6 +179,9 @@ Python·패키지·Codex 자체를 자동 설치/업데이트하지 않습니다
   이 경로를 프로젝트 `.gitignore`에 추가합니다. 백업에는 로컬 설정이 포함될 수 있으므로 공개하지 마세요.
 - 이전 설치본과 같은 파일은 갱신할 수 있지만, 사용자가 수정한 파일은 임의로 덮어쓰지 않습니다.
   이런 경우 Codex가 로컬 지침을 보존해 검토·병합하고 변경 내역을 보고합니다.
+- Managed AGENTS marker만으로 원본을 인정하지 않습니다. Metadata/block hash가 없어도 현재 payload,
+  기록된 block 또는 검증 가능한 pristine legacy 본문과 일치해야 자동 갱신합니다. 출처 미확인 block은
+  conflict로 보존하며 원본 백업과 diff를 두고 수동 병합합니다. Metadata를 위조하거나 force로 우회하지 않습니다.
 - 같은 상태에 다시 설치하면 중복 block/table을 만들지 않습니다.
 - `~/.codex`, 로그인 정보, Git remote, 프로젝트 trust, 권한 설정은 변경하지 않습니다.
   자동 commit/push, 실험 실행, CI/scheduler 제출도 하지 않습니다.
@@ -164,7 +218,7 @@ ZIP 파일 하나만 업로드하지 마세요. `payload/.codex/` 같은 숨김 
 - [Custom subagents and effort precedence](https://learn.chatgpt.com/docs/agent-configuration/subagents)
 - [Configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
 
-v5는 v4의 Codex 설정·등록 형식을 변경하지 않습니다. 특정 로컬 CLI 버전에서의 성공을 보장하지 않습니다.
+v5.3은 기존 standalone 역할 형식을 유지하고 supervisor/qa를 추가합니다. 특정 로컬 CLI 버전에서의 성공을 보장하지 않습니다.
 이번 연구 지침 설계에서는 아래 공식 안내도 참고했습니다.
 - [Astra prompts and decision boundaries](https://learn.chatgpt.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)
 - [Reasoning prompting](https://developers.openai.com/api/docs/guides/reasoning-best-practices)

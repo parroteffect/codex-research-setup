@@ -1,0 +1,11 @@
+# Merge into the existing [agents] table; do not duplicate it.
+# Preserve existing model, permission, sandbox, and project settings.
+# This caps open subagent threads, not shell processes or resource usage.
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3
+
+# Default only: Engineer high/xhigh, QA medium/high, Supervisor high/xhigh.
+# Main selects role-appropriate effort in actual spawn arguments; 3 slots exclude Main.
+# Keep model/effort pins unset in engineer, qa, and supervisor role files.
+default_subagent_reasoning_effort = "high"

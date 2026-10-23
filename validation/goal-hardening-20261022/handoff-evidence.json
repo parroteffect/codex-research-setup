@@ -1,0 +1,86 @@
+{
+  "artifacts": [
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/source-manifest.json",
+      "bytes": 7570,
+      "sha256": "7c1cfb7fa3032ef3e7775f1874f3c70f4d2cc122fb7c0c3c742c9b2ad6dc8487"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/before-manifest.json",
+      "bytes": 5487,
+      "sha256": "2f7e029aa2b7981400dece3c7a64e08a865127372ad4597f4712d98e14dc4ebd"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/before-tracked.diff",
+      "bytes": 37755,
+      "sha256": "c38216c00a54c83ff897fb905d0a81c3b7ff9c6921f3877e7fc2ee0a2b92bba7"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/before-git-status.txt",
+      "bytes": 651,
+      "sha256": "b247f04a6fd96e72b00398ee30d50dec25b95a34b9bf72870e81f5acddcc0201"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/SPEC-R1.md",
+      "bytes": 9252,
+      "sha256": "c457845ac89827c8ceaa4eca0b63af83b55fa0f11c17a03517bc56ae8f829efd"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/test-1.json",
+      "bytes": 489,
+      "sha256": "50e9bf2618700eee443a236247d0a8bb3c680862be4f0d54881f5637989b09d5"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/test-1.log",
+      "bytes": 184,
+      "sha256": "93665289b9f10edd4f19c8fcf0ae924932354e2fbc67eabab95970be33203519"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/test-2.json",
+      "bytes": 562,
+      "sha256": "c4ee987b74b951be764b393452c506ce49e0ae5d5c21e45c88b75993911b16d3"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/test-2.log",
+      "bytes": 11878,
+      "sha256": "08219974e71858a83fc77aa46bb709ad74e4742c708368d04d66cc6573332fb0"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/test-2-source-manifest.json",
+      "bytes": 6434,
+      "sha256": "bee92f5e4bc0a0e7b09897c8f442bf41b55126b797eddedfb89754b3e2fa178a"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/changes-from-v5.3.0.diff",
+      "bytes": 78288,
+      "sha256": "2e326466a86492da1946ac51d8dff7a6a9aab65817b13829b98bbb12f48ffacb"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/diff-check.log",
+      "bytes": 23,
+      "sha256": "75ebccfc18cc5b1a8b32589edccfa2e9f53d9f4dcde857010b3235519655e37f"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/final-tracked.diff",
+      "bytes": 48246,
+      "sha256": "70c0c4a91bea576bc31dfa8b46572015cf578f5e521fdca0e5f05f743608333b"
+    },
+    {
+      "path": "/workspace/_nas/_shared/codex-research-setup/validation/goal-hardening-20261022/final-git-status.txt",
+      "bytes": 676,
+      "sha256": "d4ab17a1a650edc962b3d6fd7d6166dfb5993d02361464458870c076f619bc0f"
+    },
+    {
+      "path": "/workspace/kvcprs/experiments/goal-workflow-hardening-20261022/REPORT.md",
+      "bytes": 6812,
+      "sha256": "20488895d444dc7c7487046d2828b60715a4b7df89d1e5d09808a1e32bc601bd"
+    },
+    {
+      "path": "/workspace/kvcprs/experiments/goal-workflow-hardening-20261022/RUNBOOK.md",
+      "bytes": 2913,
+      "sha256": "a247eddcc794fe84dd0ce075eda19344441932099d254807b2219b7db436da34"
+    }
+  ],
+  "actual_experiment": "NOT_RUN",
+  "engineering_status": "DONE"
+}

@@ -1,0 +1,1181 @@
+--- before/BOOTSTRAP.md
++++ after/BOOTSTRAP.md
+@@ -104,7 +104,7 @@
+ 백업을 공개 GitHub에 올리지 않는다. 설치는 파일별 atomic replacement이며
+ 여러 파일 전체에 대한 transaction은 아니다. 중간 오류 시 변경 목록·백업부터 확인한다.
+ 
+-### v5.3으로 업데이트할 때
++### v5.3.1로 업데이트할 때
+ - supervisor/qa standalone role, goal guide/guard, 최신 template를 managed file로 추가한다.
+   name 충돌/legacy [agents.supervisor]/[agents.qa]도 쓰기 전 검토한다. Model/effort pin은 없다.
+ - 사용자 `research/GOAL_CONFIG.md`는 create-only다. 기존 작성본·STATE·goal history를 바꾸지 않는다.
+@@ -114,7 +114,14 @@
+   실제 spawn에서 선택한다. 기존 user model/security를 보존한다. Thread followup은 effort 변경이 아니다.
+ - Helper는 검증/기록용이며 runner나 OS sandbox가 아니다. 외부 bounded executor·실제 자원강제·
+   runtime 역할 검증은 NOT_VERIFIED로 남긴다. Heavy/unknown 검증은 NEEDS_USER_RUN/USER_ONLY다.
+-- VERSION/manifest의 payload hash를 확인하고 알려진 v5.2 미수정 파일만 안전하게 갱신한다.
++- VERSION/manifest의 payload hash를 확인하고 알려진 v5.2/v5.3.0 미수정 파일만 안전하게 갱신한다.
++
++- Managed AGENTS block은 metadata/block hash가 없어도 provenance를 확인한다. 현재 payload·기록된
++  block·검증 가능한 pristine legacy가 아니면 conflict/manual merge다. Marker를 원본 증거로 삼거나
++  metadata를 조작하지 않는다. 원본/밖의 프로젝트 규칙과 백업을 보존한다.
++- GOAL_SETUP template는 managed로 설치하되 사용자 SETUP 작성본·GOAL_CONFIG schema1을 바꾸지 않는다.
++  별도 사용자 SETUP 배정→준비/QA→완료·artifact 확인→RUN init→RUN 예약 순서다.
++  SETUP은 운영 회계이며 guard 강제가 아니다. 단일 총액 분할/추가·배정 이전은 사용자 승인 사항이다.
+ 
+ ### v5.2로 업데이트할 때
+ - `.codex/guides/monk.md`를 새 managed file로 설치하고 AGENTS·research guide·시작 안내·
+--- before/README.md
++++ after/README.md
+@@ -8,7 +8,7 @@
+ Main은 소스 코드·diff·호출부·테스트를 직접 읽고 검수합니다.
+ 연구에서는 새로운 문제·방법·메커니즘과 핵심 수학적 분석을 직접 발전시킵니다.
+ 
+-## v5.3: Goal overlay와 독립 Supervisor / QA
++## v5.3.1: Goal overlay와 독립 Supervisor / QA
+ 
+ 연구는 기본 동작입니다. **Goal**은 연구→작은 판별 검증→채택/기각/보강→다음 연구를
+ 사용자의 ultimate goal까지 이어가는 자율 진행 옵션이고, **monk**는 독립적인 조사 제한입니다.
+@@ -34,8 +34,15 @@
+ Monk에서는 문헌 novelty 미확인을 유지합니다. 반복 DEV 최적값을 독립 confirmation으로 부르지 않습니다.
+ 
+ - [Goal 운영/명령/한계](payload/.codex/guides/goal.md)
++- [별도 SETUP 예산·기록](payload/research/_templates/GOAL_SETUP.md)
+ - [사용자 작성 양식](payload/research/GOAL_CONFIG.md), [proxy 계약](payload/research/_templates/PROXY_CONTRACT.md)
+ - [작은 설명용 예시](payload/examples/GOAL_EXAMPLE.md)
++
++v5.3.1은 준비 비용을 별도 사용자 SETUP 배정으로 명시합니다. SETUP 예약/준비/QA→완료·artifact
++확인→RUN init→RUN 예약 순서이며 RUN TOML/schema1은 그대로입니다. SETUP 기록은 운영상 검수하며
++helper가 강제·계측하지 않습니다. 단일 총액은 사용자 승인 분할이 필요하고 deadline/예산을 임의로 늘리지 않습니다.
++정체 stop은 이력에서 유지하고 progress 응답은 같은 lock에서 계산합니다. Pending마다 bounded FINISH
++공간을 보존하며 metadata 공간 부족과 영구 budget stop을 구분합니다. 상세 한계는 goal guide를 따릅니다.
+ 
+ 업데이트는 기존 user config/STATE/goal history를 보존합니다. 새 역할명 충돌·사용자 수정은
+ 자동 덮어쓰지 않습니다. 설치는 goal을 시작하지 않으며 runtime role 활성화는 새 세션에서 별도 확인합니다.
+@@ -160,6 +167,9 @@
+   이 경로를 프로젝트 `.gitignore`에 추가합니다. 백업에는 로컬 설정이 포함될 수 있으므로 공개하지 마세요.
+ - 이전 설치본과 같은 파일은 갱신할 수 있지만, 사용자가 수정한 파일은 임의로 덮어쓰지 않습니다.
+   이런 경우 Codex가 로컬 지침을 보존해 검토·병합하고 변경 내역을 보고합니다.
++- Managed AGENTS marker만으로 원본을 인정하지 않습니다. Metadata/block hash가 없어도 현재 payload,
++  기록된 block 또는 검증 가능한 pristine legacy 본문과 일치해야 자동 갱신합니다. 출처 미확인 block은
++  conflict로 보존하며 원본 백업과 diff를 두고 수동 병합합니다. Metadata를 위조하거나 force로 우회하지 않습니다.
+ - 같은 상태에 다시 설치하면 중복 block/table을 만들지 않습니다.
+ - `~/.codex`, 로그인 정보, Git remote, 프로젝트 trust, 권한 설정은 변경하지 않습니다.
+   자동 commit/push, 실험 실행, CI/scheduler 제출도 하지 않습니다.
+--- before/VERSION
++++ after/VERSION
+@@ -1 +1 @@
+-5.3.0
++5.3.1
+--- before/legacy-hashes.json
++++ after/legacy-hashes.json
+@@ -6,27 +6,31 @@
+     "76c3fbcd2f43027e5c9f8a67530dc1f68f6bb4ae660836be77eb28e53dc36271",
+     "f325c5fc7a2136b95471425c9634dff5d9f59fd7634ea839fe0c38bf11d31d99",
+     "d6f958fbc44fe4913dda8003e678c5b0d6a118bb212b1ba63f1437e29ca64902",
+-    "f365ae1d67a8f751ba0e0497f4147dd00ee9ef791de68a81de3852c3d3710532"
++    "f365ae1d67a8f751ba0e0497f4147dd00ee9ef791de68a81de3852c3d3710532",
++    "5dcdc8a3c542448d48102900586019af6eb490e4427aec229c82cb6361caf16c"
+   ],
+   ".codex/agents/engineer.toml": [
+     "72ff33f6780c9ac642007fef87f1cc1d0193fe22a7c512df16577e4815d0b2fa",
+     "a657020717422f423a422cb4dcc41fff3d2ead7cac0324e248ff540d6a6d98ac",
+     "be0da10067a6507c0dba004dee40edb56ec55cc3b344db85d88004ccc484636d",
+     "cd18250ebfae065d60720225f76ca7b4568967635d11f03bde14bfa274ed1e1f",
+-    "51e3d37c2354c9fb1890fdb538e6f9c67ca4890c24604fb5683266dfdbb94881"
++    "51e3d37c2354c9fb1890fdb538e6f9c67ca4890c24604fb5683266dfdbb94881",
++    "6188d9eeeee426ec8d124dc8123a560199975538c6f1d61f604cf0aeb973abd2"
+   ],
+   ".codex/config.toml": [
+     "20744ff3a3cd8c456305b4a81c54cf536be458121b72569531948808059a4113",
+     "bcb00575444d6df6852c6f1448795d4b76f09d2f37dd98da41d52b6d569bd47b",
+     "c2caa9f6a064478a41089a2841445f690a09ffc04da89371fffe0dc51c5ae03d",
+-    "e8c54f9dd11b8842664794da2f232c1812f2157aa66559fb8f11f76a1ae2d4c3"
++    "e8c54f9dd11b8842664794da2f232c1812f2157aa66559fb8f11f76a1ae2d4c3",
++    "530c1b6e2a64e55ae276628ade9c416be04251204ea5ad8520460facd4cfee64"
+   ],
+   "research/STATE.md": [
+     "92400155970d38c3d9c50c36acdc9aabb86ff2abda0b609d0477287e5d3d936f",
+     "c43c1840df5fc76bf96f0c5cc12b1b9c66624253d44d9fcc19016240c266b7e7",
+     "12c3eb236bad0c537769e4bdf43b10f8b4624cbad2c214efdd7a49fec6e089b3",
+     "9cf309bcccbaabc94c9537164c37ec0533f15a5ce825b1536c74bf9dff24abc6",
+-    "15f1a8ff1d6cf937b6b1ae2ade8101ced6ea34a0205fd2006f9d498f2d0e94be"
++    "15f1a8ff1d6cf937b6b1ae2ade8101ced6ea34a0205fd2006f9d498f2d0e94be",
++    "a97949d8690d7ff63c8a1aad8641719e1d7e869861a2733aa4b32e26fc7c4f83"
+   ],
+   "experiments/_templates/SPEC.md": [
+     "0889ca4de79b1b616b30ee23e3a99a8ea90de8398e8f0bc09e4100984bf59431",
+@@ -44,7 +48,8 @@
+     "5ee04d6f9d03851c52a6fb930a0b4f4007b5c60369c5e0a4a94e5ef86b681e8e",
+     "0a7d1b606f2c4fab449d362a2463f81eb88b2eaaba89a0efb00aa420cfbf2ab5",
+     "c2acabfcf217b9a37814038b0a5379258ee100b7ba66ca9352a8a5ed2e00191d",
+-    "2c56452650217fe6b0c3f414eb609e6323df90f4ab027ee28def7f9c577c6f62"
++    "2c56452650217fe6b0c3f414eb609e6323df90f4ab027ee28def7f9c577c6f62",
++    "5dde87e642efc57e915c67ad88de142dfd74b1e85a855ed65db5f114f0674bb7"
+   ],
+   ".codex/guides/code-review.md": [
+     "8ebc15b8895ffe442b0c40637a409ff1b30c5f039354c26cbc9d28d50dc2ee4f"
+@@ -56,7 +61,8 @@
+     "bf7f50bd5aa4175c4b2ba239150d6b6c615b7e8cf30f50955c51c3a7b75f143f",
+     "c5910a0b4ab5856bca52914a30eaacdb0b7a758d69c4a20c3723cd9c6ae55bd4",
+     "34105effb76d6cc9de90cb248fae4d707c0d7f293c4872a89d3a9cba492b4616",
+-    "9abe9a18eddefe77edc1f491e97332e0879c0d32739c242c0716edda602e904d"
++    "9abe9a18eddefe77edc1f491e97332e0879c0d32739c242c0716edda602e904d",
++    "b9cb00b3624b134472bdd75f2f57f98434d79dfddd21f8035fe555d4136d4025"
+   ],
+   "experiments/_templates/RUNBOOK.md": [
+     "ab471e01cf62c03612e8bdc341f0bb426b96ea37702e43a0f29811cb0ddb44d6"
+@@ -64,9 +70,41 @@
+   ".codex/VERIFY_SETUP.md": [
+     "639a39a50be17fcad5b685999a5d218f8050b036bd48253996609086209cb71b",
+     "78610ceb696f4942242d0f2903957c92dbf011d067ae0fe1a3b77d7bdabf3c33",
+-    "d85d6725c088ae91c3f87961f77344a547a1d96bfe560f3aae52334e08f6476b"
++    "d85d6725c088ae91c3f87961f77344a547a1d96bfe560f3aae52334e08f6476b",
++    "357c188d7db3edc346eaa67a39c5932ffcc71646c6c5451bef3767c9603ebb62"
+   ],
+   ".codex/guides/monk.md": [
+-    "a6dc6d0adb15047235685b69748ec8aafe7f8e1a4bac5bb1056610bc41cae5fd"
++    "a6dc6d0adb15047235685b69748ec8aafe7f8e1a4bac5bb1056610bc41cae5fd",
++    "a13d6d98c929bcd9d3d9ca63115e06d45453bdcf913abf5781f948ccee9f127a"
++  ],
++  ".codex/agents/qa.toml": [
++    "faf16a469c1aafb619dd5786e32d0d69e29bf8a09393c55b806e1db79551afaa"
++  ],
++  ".codex/agents/supervisor.toml": [
++    "d4779edfc10ce31d06bed30e3cd3edee0db5ba88df4e18af428b06a2d5d6688d"
++  ],
++  ".codex/guides/goal.md": [
++    "4bb3eb8051ce4688c9f49f813ebcfccb22ec4ce4e2f4dd9fc232dc0606359543"
++  ],
++  ".codex/tools/goal_guard.py": [
++    "0ca1a3fc7d7220a0ba8d51f6ec16d6d5af3ce3bbcd837a64a73e683e630400a6"
++  ],
++  ".codex/GOAL_EXAMPLE.md": [
++    "70edd20a3e0d427e3f03a9582257264be5c0fb908e57b08d8fd53e410c599eee"
++  ],
++  "research/GOAL_CONFIG.md": [
++    "44d1959fa5605d2f1a780929a22529b70036fb513c5f74159c5cb73387d0a7c8"
++  ],
++  "research/_templates/CANDIDATE.md": [
++    "149a531a6d0819f7ca49ae4225778f8ef5240541e4e2663e645891d7360faf65"
++  ],
++  "research/_templates/GOAL_CONFIG.md": [
++    "44d1959fa5605d2f1a780929a22529b70036fb513c5f74159c5cb73387d0a7c8"
++  ],
++  "research/_templates/GOAL_PROGRESS.md": [
++    "4cd3902e25e7e054c499551135e49d72ccca381c2e6d4cdb024d5909e6b688aa"
++  ],
++  "research/_templates/PROXY_CONTRACT.md": [
++    "b911e4bb16e3df04cc88fca3f4b17866291aa932ab2b2ba7eaa7cf15fe5c216c"
+   ]
+ }
+--- before/manifest.json
++++ after/manifest.json
+@@ -1,13 +1,13 @@
+ {
+   "package": "codex-research-workflow",
+-  "version": "5.3.0",
++  "version": "5.3.1",
+   "files": [
+     {
+       "source": "payload/.codex/VERIFY_SETUP.md",
+       "destination": ".codex/VERIFY_SETUP.md",
+       "legacy_path": ".codex/VERIFY_SETUP.md",
+       "mode": "managed-file",
+-      "sha256": "357c188d7db3edc346eaa67a39c5932ffcc71646c6c5451bef3767c9603ebb62"
++      "sha256": "06aecd6eb203e19e2230e89e6fef978b11a4723659ace1f35cfad1b77619f997"
+     },
+     {
+       "source": "payload/.codex/agents/engineer.toml",
+@@ -49,7 +49,7 @@
+       "destination": ".codex/guides/goal.md",
+       "legacy_path": ".codex/guides/goal.md",
+       "mode": "managed-file",
+-      "sha256": "4bb3eb8051ce4688c9f49f813ebcfccb22ec4ce4e2f4dd9fc232dc0606359543"
++      "sha256": "6590d529a60176d6bf4cbc8f790f497466d5d057752a7a9718746e2c5c93943a"
+     },
+     {
+       "source": "payload/.codex/guides/implementation.md",
+@@ -77,28 +77,28 @@
+       "destination": ".codex/tools/goal_guard.py",
+       "legacy_path": ".codex/tools/goal_guard.py",
+       "mode": "managed-file",
+-      "sha256": "0ca1a3fc7d7220a0ba8d51f6ec16d6d5af3ce3bbcd837a64a73e683e630400a6"
++      "sha256": "4f25b7ef81daa1610180113c03b5045e0378b422549241971399a9e9a74a0b47"
+     },
+     {
+       "source": "payload/AGENTS.md",
+       "destination": "AGENTS.md",
+       "legacy_path": "AGENTS.md",
+       "mode": "agents-block",
+-      "sha256": "5dcdc8a3c542448d48102900586019af6eb490e4427aec229c82cb6361caf16c"
++      "sha256": "5714a0fe86f33420054fd961dc57c1562921cdc35cdda70c18ac3493961ec844"
+     },
+     {
+       "source": "payload/START.txt",
+       "destination": ".codex/RESEARCH_START.txt",
+       "legacy_path": "START.txt",
+       "mode": "managed-file",
+-      "sha256": "5dde87e642efc57e915c67ad88de142dfd74b1e85a855ed65db5f114f0674bb7"
++      "sha256": "7ea5186d0292d748c99316c6104a3ac57df36ad0cb67e5d070d3b716dc9dd7e5"
+     },
+     {
+       "source": "payload/examples/GOAL_EXAMPLE.md",
+       "destination": ".codex/GOAL_EXAMPLE.md",
+       "legacy_path": ".codex/GOAL_EXAMPLE.md",
+       "mode": "managed-file",
+-      "sha256": "70edd20a3e0d427e3f03a9582257264be5c0fb908e57b08d8fd53e410c599eee"
++      "sha256": "bdd0dd3b0646e35436fd9a79e8f0a1679cfbb7499019cb49348a318b30e63f7a"
+     },
+     {
+       "source": "payload/experiments/_templates/REPORT.md",
+@@ -126,7 +126,7 @@
+       "destination": "research/GOAL_CONFIG.md",
+       "legacy_path": "research/GOAL_CONFIG.md",
+       "mode": "create-only",
+-      "sha256": "44d1959fa5605d2f1a780929a22529b70036fb513c5f74159c5cb73387d0a7c8"
++      "sha256": "3fb1b52f1daff7efdabb7a812d694f862d34349689063c86518e49f859ace250"
+     },
+     {
+       "source": "payload/research/STATE.md",
+@@ -147,21 +147,28 @@
+       "destination": "research/_templates/GOAL_CONFIG.md",
+       "legacy_path": "research/_templates/GOAL_CONFIG.md",
+       "mode": "managed-file",
+-      "sha256": "44d1959fa5605d2f1a780929a22529b70036fb513c5f74159c5cb73387d0a7c8"
++      "sha256": "3fb1b52f1daff7efdabb7a812d694f862d34349689063c86518e49f859ace250"
+     },
+     {
+       "source": "payload/research/_templates/GOAL_PROGRESS.md",
+       "destination": "research/_templates/GOAL_PROGRESS.md",
+       "legacy_path": "research/_templates/GOAL_PROGRESS.md",
+       "mode": "managed-file",
+-      "sha256": "4cd3902e25e7e054c499551135e49d72ccca381c2e6d4cdb024d5909e6b688aa"
++      "sha256": "6d5f3c237e452535fa83a9e450ecc3bf264eb65620bdec2c7db923450750d013"
+     },
+     {
+       "source": "payload/research/_templates/PROXY_CONTRACT.md",
+       "destination": "research/_templates/PROXY_CONTRACT.md",
+       "legacy_path": "research/_templates/PROXY_CONTRACT.md",
+       "mode": "managed-file",
+-      "sha256": "b911e4bb16e3df04cc88fca3f4b17866291aa932ab2b2ba7eaa7cf15fe5c216c"
++      "sha256": "86df781e684d75bdd05bc47476c1905193d7eedea9899991f0fd4457ec1b9194"
++    },
++    {
++      "source": "payload/research/_templates/GOAL_SETUP.md",
++      "destination": "research/_templates/GOAL_SETUP.md",
++      "legacy_path": "research/_templates/GOAL_SETUP.md",
++      "mode": "managed-file",
++      "sha256": "f89450a38288b4fbe98c38b775de2ad7904a069a8bfe7d46b0ea9876fbe5273b"
+     }
+   ]
+ }
+--- before/payload/.codex/VERIFY_SETUP.md
++++ after/payload/.codex/VERIFY_SETUP.md
+@@ -60,3 +60,7 @@
+   외부 bounded executor의 exact revision과 실제 enforcement를 QA가 검수해야 light proxy를 반복할 수 있다.
+   미지원 필수 한도는 NEEDS_USER_RUN. 파일 설치/작은 unittest가 runtime·자원강제를 검증하지 않는다.
+   Token/provider 비용은 자동 관측하지 않는다. Goal outcome/연구 품질은 별도 미검증이다.
++
++- GOAL_SETUP managed template와 별도 사용자 SETUP/RUN 배정·준비/QA→완료→init 순서를 확인한다.
++  SETUP Markdown 회계/시작 gate는 운영 검수이며 guard가 강제·계측하지 않는다.
++  기존 사용자 form의 schema1은 유지하며 준비 비용 확인 없이 init READY를 startup 승인으로 쓰지 않는다.
+--- before/payload/.codex/guides/goal.md
++++ after/payload/.codex/guides/goal.md
+@@ -12,7 +12,7 @@
+ 사용자가 `research/GOAL_CONFIG.md`의 하나의 TOML block에 목표·범위·예산·경로를 작성하고
+ 시작을 요청한다. Agent는 입력을 해석·검사하고 별도 과제 문서에 미정 사항을 기록한다.
+ 사용자 authorization field를 임의로 채우지 않는다. 0은 금지, 빈칸은 미정이다.
+-선택되지 않은 token/cost cap 외 모든 한도는 유한해야 한다. 누락된 중요한 조건은 SETUP이다.
++선택되지 않은 token/cost cap 외 모든 한도는 유한해야 한다. 누락된 중요한 조건은 SETUP 미완료다. SETUP 예산 승인 없이는 새 proxy 준비를 시작하지 않는다.
+ 
+ 자동 실험 순환 전 과제별 proxy를 선정하고 `research/_templates/PROXY_CONTRACT.md`로
+ 범위·baseline/evaluator revision·data manifest/split·fit/tune/DEV·heldout 접근·metric/unit·
+@@ -23,6 +23,34 @@
+ 계약 변경은 새 revision, 필요한 사용자 승인과 과거 결과·남은 예산 보존을 요구한다.
+ 부적합 proxy의 점수로 유망한 외부 범위 후보를 기각하지 않는다. 별도 설계 질문 또는
+ NEEDS_USER_RUN으로 보존하며 매 아이디어에 새 full evaluator를 만들지는 않는다.
++
++## 별도 SETUP 예산과 RUN 시작 gate
++
++순서: **사용자 SETUP 배정 → 준비/독립 QA → 완료와 참조 artifact 불변 확인 → RUN init → RUN 예약**.
++Proxy 준비·검수는 frozen RUN의 별도 유한 예산 사전 작업이다. 사용자에게 SETUP 배정과
++GOAL_CONFIG의 RUN 배정을 각각 명시하게 한다. 단일 총액/총시간만 제시됐으면 사용자가
++분할을 명시적으로 승인해야 하며 agent가 추가 준비 예산을 부여하거나 deadline을 늘리지 않는다.
++
++Main은 `research/_templates/GOAL_SETUP.md`를 과제의 `SETUP.md`로 복사해 사용자 승인·최초 시작
++UTC·유한 elapsed/deadline·calls/reviews/attempts/retries·자원 상한을 기록한다. 준비 전에 작업별
++upper bound를 예약하고 actual/UNKNOWN·pending·실패/재시도 비용·잔여량을 갱신한다.
++Main/Engineer/QA의 작업·turn·교체도 부과한다. UNKNOWN/pending은 예약비용을 유지하고
++실패는 무료가 아니다. 이 Markdown 회계는 **운영상 검수하며 goal_guard가 강제·계측하지 않는다**.
++비용/필수 cap 관측·강제가 불명확하거나 heavy인 작업은 USER_ONLY/NEEDS_USER_RUN이다.
++
++기존 reviewed proxy를 재사용하면 원본 provenance·검수·알려진 과거 비용/UNKNOWN을 기록한다.
++새 artifact/revision 확인과 QA에도 유효한 SETUP 배정이 필요하다. 준비를 무제한 반복하지 않는다.
++한도가 끝나면 완료 또는 HANDOFF로 남기며, 미완료 준비/pending이 있으면 RUN init를 하지 않는다.
++Main과 독립 QA가 완료 기록 또는 문서화된 pre-existing reviewed prerequisite 및 참조 artifact
++불변을 확인한 뒤 freeze한다. Helper의 validate/init READY 응답은 이 운영 gate를 검사하지 않는다.
++
++Schema1 GOAL_CONFIG의 RUN 한도와 elapsed clock은 **init부터** 적용하며 미기록 SETUP 비용을
++포함한다고 하지 않는다. GOAL_PROGRESS에 SETUP 기록·비용과 RUN 사용량을 함께 연결한다.
++원래 end-to-end deadline이 있으면 RUN 시작 때 남은 범위 안에서 사용자 승인된 한도를 쓰며
++clock을 초기화해 연장하지 않는다. 재개는 같은 두 배정·시작시간·과거 사용량을 유지한다.
++미사용 SETUP/RUN 배정의 이전이나 추가는 명시적 사용자 승인 없이는 금지한다.
++Init 이후의 허용된 준비/preflight는 RUN 예약을 사용한다. Frozen artifact 변경에는 기존의
++승인·migration 정책이 적용된다. 설치된 사용자 양식은 schema 변경 없이 create-only로 보존한다.
+ 
+ ## 역할과 실제 effort
+ 
+@@ -105,29 +133,36 @@
+ Main의 작업/각 subagent turn/교체/검토도 유한 agent-call/time 예산에 넣는다. Token/cost cap은
+ 선택 사항이며 요구한 cap을 관측/강제하지 못하면 dependent automatic work를 진행하지 않는다.
+ Self-reported capability boolean은 실제 강제 증명이 아니다. Ledger는 기록한 이벤트만 계측한다.
+-준비/preflight에 필요한 agent/CPU 비용도 별도 예약에 포함하고 무상 반복으로 제외하지 않는다.
++Init 전 준비/preflight는 승인된 SETUP 기록에, init 이후는 RUN ledger에 예약한다. 무상 준비 반복은 없다.
+ 
+ ## Helper 사용과 재개
+ 
+ Python3.11+가 이미 있는 환경에서 사용한다. 새로운 환경이나 패키지를 설치하지 않는다.
+ 아래 경로는 실제 과제 경로로 바꾼다. 이 명령은 작은 metadata만 읽고 쓴다.
++`research/goals/g1/`는 SETUP.md와 progress 문서를 두는 이미 존재하는 과제 부모다.
++Guard state는 아직 없는 별도 child `research/goals/g1/run-state/`를 사용한다.
++SETUP 문서가 있는 과제 root를 --state로 넘기지 않는다. Init 후 모든 명령은 같은 child를 참조한다.
+ 
+ ```sh
+ python3 .codex/tools/goal_guard.py validate --config /project/research/GOAL_CONFIG.md
+-python3 .codex/tools/goal_guard.py init --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1
+-python3 .codex/tools/goal_guard.py reserve --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1 --record /project/research/plan.json
+-python3 .codex/tools/goal_guard.py finish --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1 --attempt toy-001 --record /project/research/usage.json
+-python3 .codex/tools/goal_guard.py progress --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1 --meaningful no --evidence review-R2
+-python3 .codex/tools/goal_guard.py status --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1
++python3 .codex/tools/goal_guard.py init --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1/run-state
++python3 .codex/tools/goal_guard.py reserve --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1/run-state --record /project/research/plan.json
++python3 .codex/tools/goal_guard.py finish --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1/run-state --attempt toy-001 --record /project/research/usage.json
++python3 .codex/tools/goal_guard.py progress --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1/run-state --meaningful no --evidence review-R2
++python3 .codex/tools/goal_guard.py status --config /project/research/GOAL_CONFIG.md --state /project/research/goals/g1/run-state
+ ```
+ 
+-`init`가 freeze이며 부모는 이미 존재해야 한다. 기존 state는 덮어쓰지 않는다. 각 RESERVE는
++`init` 전에 위 SETUP 완료/독립 QA/불변 artifact gate를 운영상 확인한다. `init`가 RUN freeze이며 부모는 이미 존재해야 한다. 기존 state는 덮어쓰지 않는다. 각 RESERVE는
+ startup+work+cleanup+save upper bound를 먼저 차감한다. Agent/review/experiment 종류를 구분한다.
+ FINISH는 unknown(null)을0으로 바꾸지 않고 각 누적 차원에서 max(reserved, actual)을 부과한다.
+ 실패/재시도도 같은 비용을 지며 overshoot는 breach로 남겨 새 예약을 차단한다. Pending 예약은
+ 계속 차감·동시 점유하며 미해결 시도를 재개라는 이름으로 다시 실행하지 않는다.
+ `progress`는 의미 있는 결정의 근거 또는 정체를 기록한다. 정체 카운트는 main의 기록에 의존한다.
+-실제 progress가 없는데 counter만 초기화하지 않는다. Helper는 연구 품질·목표 달성을 계산하지 않는다.
++한도 이전의 의미 있는 progress는 연속 카운트를 초기화한다. 한도 도달 후에는 이력에서 stop을
++복원하므로 늦은 progress로 재개하지 않는다. `stagnant_reviews`는 도달 시 한도에 고정되며
++`stagnation_stop_latched`가 이를 표시한다. 과거 버전의 crossing 뒤 progress/예약/완료 기록도
++보존·부과한다. 늦은 evidence와 pending FINISH는 metadata 용량 안에서 기록할 수 있다.
++Progress append와 반환 상태 계산은 같은 lock이다. Helper는 연구 품질·목표 달성을 계산하지 않는다.
+ 
+ Config 전체 byte hash, contract와 작은 explicit evaluator/baseline file hash를 묶는다.
+ 변경된 코드에 옛 결과를 재사용하지 않는다. 입력/계약은256KiB, manifest file은512KiB×최대32개,
+@@ -141,14 +176,35 @@
+ Checkpoint에 config/contract/ledger/evidence revision과 pending attempt를 남기고 재개 때 대조한다.
+ Executor가 관리할 수 있는 것은 자신의 goal job뿐이며 사용자 job은 중단·변경·재시작하지 않는다.
+ 
+-Templates: `research/_templates/{GOAL_CONFIG,PROXY_CONTRACT,CANDIDATE,GOAL_PROGRESS}.md`.
++Templates: `research/_templates/{GOAL_SETUP,GOAL_CONFIG,PROXY_CONTRACT,CANDIDATE,GOAL_PROGRESS}.md`.
+ 작성 예시는 `.codex/GOAL_EXAMPLE.md`이며 실행 허가가 아니다. 실험 SPEC/REPORT/RUNBOOK은
+ 기존 `experiments/_templates/`를 재사용한다. 무거운 실제 검증은 NOT_RUN/USER_ONLY로 남긴다.
+ 
+ 단일 plan의 초과나 일시적 concurrency 부족은 helper의 `scope=ATTEMPT` 예약 거부다.
+ 그 후보의 필요한 실험은 NEEDS_USER_RUN/보류로 남기고, 잔여 예산 안의 다른 유용한 연구를 이어간다.
+ 이는 goal 전체 종료가 아니다. `scope=GOAL`은 elapsed/attempt/stagnation 소진·breach 등
+-전체 경계이며 과학적 성공을 뜻하지 않는다. 비교 의미를 훼손하는 임의 축소는 하지 않는다.
++전체 경계이며 과학적 성공을 뜻하지 않는다. 정체 stop도 자동 resume하지 않는다. 사용자 승인과
++과거 소모/시작시간을 보존하는 검토된 migration만 별도 가능하며 새 init로 우회하지 않는다.
++비교 의미를 훼손하는 임의 축소는 하지 않는다.
++
++Metadata 용량은 scientific/global budget stop과 별개다. `scope=METADATA`는 현재 ledger에서
++새 예약과 그 FINISH 공간을 확보할 수 없다는 뜻이다. Pending이 있으면 그 FINISH만 기록한 뒤
++status를 확인한다. 실제 FINISH가 최대 slot보다 작으면 여유가 생길 수 있으며 이는 예산 재개가
++아니다. Pending이 없으면 자동 회복할 수 없으므로 handoff/stop한다. 삭제/rotation/reset 금지다.
++`scope=EVENT`는 해당 큰 record만 맞지 않는 거부다. 더 짧은 정직한 artifact ID/metadata를 사용할
++수 있지만 evidence를 조용히 잘라 버리지 않는다. 상태가 READY여도 특정 큰 record는 거부될 수 있다.
++
++새 record payload는 ASCII-escaped compact JSON(newline 포함) **4096 bytes**, envelope는
++별도로 **512 bytes** 이하인지 append 전에 검사한다. ID는64 ASCII chars, 수치는 유한·최대10^18,
++JSON escaping/list/숫자/seq/time/hash까지 포함한 FINISH slot은 **4608 bytes**다. Pending마다
++slot을 남겨 `ledger bytes + pending×4608 <= 4MiB`를 유지한다. RESERVE/PROGRESS는 이를
++침범하지 않으며 완료/overshoot는 실제 사용량과 breach를 기록한다. 오류의 `event_recorded=false`는
++완료 미기록이며, 성공 응답의 true와 구분한다. CLI nonzero만으로 미기록이라 추측하지 않는다.
++STATUS/용량 거부의 `metadata_capacity`에서 여유·pending slot·headroom·새 예약 차단을 확인한다.
++
++기존 event는 새 payload 크기 제한 때문에 거부하지 않는다. 이전 ledger의 pending headroom이
++부족하면 새 작업/PROGRESS를 막고 수동 handoff한다. 그래도 실제 맞는 bounded FINISH는 허용한다.
++맞지 않는 FINISH는 미기록을 명시하고 pending/예약비용을 유지한다. Raw 기록은 삭제·절삭하지 않는다.
+ 
+ Guard metadata는 init 전에 `METADATA_RESERVATION` bytes를 디스크 예산에서 보수적으로 예약한다
+ (3×256KiB snapshot 상한 +4MiB ledger +64KiB bookkeeping). 이보다 작은 disk cap/0은
+--- before/payload/.codex/tools/goal_guard.py
++++ after/payload/.codex/tools/goal_guard.py
+@@ -20,6 +20,12 @@
+ 
+ TEXT_LIMIT = 262_144
+ LEDGER_LIMIT = 4_194_304
++# Limits apply to NEW serialized records, not historical replay. json_bytes uses
++# ASCII escapes, so these byte limits include every string/list/numeric encoding.
++PAYLOAD_LIMIT = 4096
++ENVELOPE_LIMIT = 512
++EVENT_LIMIT = PAYLOAD_LIMIT + ENVELOPE_LIMIT
++FINISH_SLOT = EVENT_LIMIT
+ MANIFEST_FILE_LIMIT = 524_288
+ MAX_MANIFEST_FILES = 32
+ # Reserve bounded snapshots + full ledger + small lock/directory bookkeeping upfront.
+@@ -35,15 +41,17 @@
+ 
+ 
+ class GuardError(Exception):
+-    def __init__(self, message, status="BLOCKED_CONFIG"):
++    def __init__(self, message, status="BLOCKED_CONFIG", **fields):
+         super().__init__(message)
+         self.status = status
++        self.fields = fields
+ 
+ 
+ def result(status, **fields):
+     return {"status": status, "execution_authorization": "NOT_GRANTED",
+             "enforcement": "NOT_PROVIDED", "automatic_execution": "NOT_DETERMINED",
+             "proxy_requirement": "REVIEWED_EXTERNAL_BOUNDED_EXECUTOR_OR_NEEDS_USER_RUN",
++            "setup_gate": "SEPARATE_USER_ALLOCATION_AND_REVIEW_NOT_VERIFIED_BY_GUARD",
+             "scientific_decision": "NOT_COMPUTED", "goal_achievement": "NOT_COMPUTED", **fields}
+ 
+ 
+@@ -262,13 +270,61 @@
+     return event
+ 
+ 
++def bounded_event(kind, payload, events):
++    timestamp = time.time()
++    number(timestamp, "event time")
++    number(len(events), "seq", True)
++    if len(json_bytes(payload)) > PAYLOAD_LIMIT:
++        raise GuardError("Serialized event payload exceeds 4096 bytes; use concise evidence IDs",
++                         scope="EVENT", event_recorded=False)
++    event = envelope(kind, payload, len(events), events[-1]["hash"] if events else "", timestamp)
++    # Covers seq/time numeric encodings, kind, keys, two hashes and newline.
++    # Checked explicitly so a future envelope change cannot weaken the bound.
++    if len(json_bytes(event)) - len(json_bytes(payload)) > ENVELOPE_LIMIT:
++        raise GuardError("Event envelope exceeds its bounded completion slot", scope="EVENT", event_recorded=False)
++    return event
++
++
++def metadata_capacity(state, events):
++    ledger_bytes = len(read_small(state / "ledger.jsonl", LEDGER_LIMIT))
++    pending = sum(e["kind"] == "RESERVE" for e in events) - sum(e["kind"] == "FINISH" for e in events)
++    free = LEDGER_LIMIT - ledger_bytes - pending * FINISH_SLOT
++    # Smallest syntactically valid reservation (an agent call); resource policy
++    # may still refuse it. This lower bound distinguishes a large event refusal
++    # from a state in which no new reservation can retain a completion slot.
++    # A one-character retry ID serializes to 3 bytes, versus 4 for null. Use
++    # that lower bound even when this state's retry policy would disallow it.
++    smallest = {"id": "a", "kind": "agent", "retry_of": "a", "light": True, "cost_known": True,
++                "duration_seconds": 1, "cpu_cores": 0, "ram_mib": 0, "gpu_ids": [], "vram_mib": 0,
++                "bounds": {key: int(key == "agent_calls") for key in DIMENSIONS}}
++    previous = events[-1]["hash"] if events else ""
++    minimum_reserve = len(json_bytes(envelope("RESERVE", smallest, len(events), previous, time.time())))
++    minimum_progress = len(json_bytes(envelope("PROGRESS", {"meaningful": True, "evidence": "x"},
++                                               len(events), previous, time.time())))
++    return {"ledger_bytes": ledger_bytes, "ledger_limit_bytes": LEDGER_LIMIT,
++            "pending_finish_slots": pending, "finish_slot_bytes": FINISH_SLOT,
++            "reserved_finish_bytes": pending * FINISH_SLOT, "free_unreserved_bytes": free,
++            "completion_headroom_ok": free >= 0,
++            "minimum_reserve_with_finish_bytes": minimum_reserve + FINISH_SLOT,
++            "new_reservations_blocked": free < minimum_reserve + FINISH_SLOT,
++            "minimum_progress_bytes": minimum_progress, "progress_record_possible": free >= minimum_progress,
++            "recovery": "PENDING_FINISH_MAY_RELEASE_HEADROOM" if pending else "MANUAL_HANDOFF_IF_FULL"}
++
++
+ def append_event(state, events, kind, payload):
+-    event = envelope(kind, payload, len(events), events[-1]["hash"] if events else "", time.time())
++    event = bounded_event(kind, payload, events)
+     path = safe_path(str(state / "ledger.jsonl"))
+     data = json_bytes(event)
+-    existing = read_small(path, LEDGER_LIMIT)
+-    if len(existing) + len(data) > LEDGER_LIMIT:
+-        raise GuardError("Ledger size cap reached; preserve state and stop", "BUDGET_EXHAUSTED")
++    capacity = metadata_capacity(state, events)
++    required = capacity["ledger_bytes"] + len(data)
++    if kind in ("RESERVE", "PROGRESS"):
++        required += (capacity["pending_finish_slots"] + (kind == "RESERVE")) * FINISH_SLOT
++    # A legacy ledger may already owe more slots than it has space. Still accept
++    # each bounded FINISH that actually fits; never discard its usage/breach.
++    if required > LEDGER_LIMIT:
++        scope = "METADATA" if capacity["new_reservations_blocked"] else "EVENT"
++        raise GuardError("Ledger metadata capacity insufficient; event NOT recorded; preserve state for handoff",
++                         "BUDGET_EXHAUSTED", scope=scope, event_recorded=False, metadata_capacity=capacity)
+     if events and event["time"] < events[-1]["time"]:
+         raise GuardError("Clock moved backwards", "BLOCKED_CONTRACT")
+     fd = os.open(path, os.O_WRONLY | os.O_APPEND | getattr(os, "O_NOFOLLOW", 0))
+@@ -397,7 +453,10 @@
+             if type(payload["meaningful"]) is not bool:
+                 raise GuardError("Invalid progress boolean")
+             string(payload["evidence"], "progress evidence")
+-            stagnant = 0 if payload["meaningful"] else stagnant + 1
++            # Recover a terminal crossing from history, including older ledgers
++            # that subsequently reset the counter or admitted additional work.
++            if stagnant < cfg["limits"]["max_stagnation"]:
++                stagnant = 0 if payload["meaningful"] else stagnant + 1
+         else:
+             raise GuardError("Unknown ledger event", "BLOCKED_CONTRACT")
+     return attempts, used, breach, stagnant
+@@ -464,7 +523,12 @@
+             reason = reason or "Attempt budget exhausted"
+         if reason:
+             return result("BUDGET_EXHAUSTED", reason=reason, scope="GOAL", goal_achieved=False,
++                          event_recorded=False, metadata_capacity=metadata_capacity(state, events),
+                           remaining={key: (cap-used[key] if cap != "unselected" else "unselected") for key, cap in caps(cfg).items()})
++        capacity = metadata_capacity(state, events)
++        if capacity["new_reservations_blocked"]:
++            return result("BUDGET_EXHAUSTED", reason="No new reservation fits with bounded FINISH headroom",
++                          scope="METADATA", event_recorded=False, metadata_capacity=capacity)
+         if not plan["light"] or not plan["cost_known"] or accounting_gaps(cfg):
+             return result("NEEDS_USER_RUN", scope="ATTEMPT", reason="Heavy/unknown work or unsupported requested accounting")
+         pending = [a["plan"] for a in attempts.values() if a["usage"] is None]
+@@ -495,10 +559,13 @@
+                 reason = f"Cumulative {key} budget exhausted"
+         if reason:
+             return result("BUDGET_EXHAUSTED", reason=reason, scope="ATTEMPT",
++                          event_recorded=False, metadata_capacity=capacity,
+                           remaining={key: (cap-used[key] if cap != "unselected" else "unselected") for key, cap in caps(cfg).items()},
+                           goal_achieved=False)
+-        append_event(state, events, "RESERVE", plan)
++        event = append_event(state, events, "RESERVE", plan)
++        capacity = metadata_capacity(state, events + [event])
+     return result("READY_FOR_LIGHT_REVIEW", attempt_id=plan["id"], reservation_is_execution=False,
++                  event_recorded=True, metadata_capacity=capacity,
+                   warning="Bookkeeping only; independently reviewed bounded executor is still required")
+ 
+ 
+@@ -511,13 +578,8 @@
+         if attempt_id not in attempts or attempts[attempt_id]["usage"] is not None:
+             raise GuardError("Attempt is missing or already finished", "BLOCKED_CONTRACT")
+         event = append_event(state, events, "FINISH", {"id": attempt_id, "usage": usage})
+-        _, _, breach, _ = replay(events + [event], cfg)
+-        reason = exhausted(cfg, events + [event], breach, stagnant)
+-        if len(attempts) >= cfg["limits"]["max_attempts"]:
+-            reason = reason or "Attempt budget exhausted"
+-    return result("BUDGET_EXHAUSTED" if reason else "READY_FOR_LIGHT_REVIEW", breach=breach,
+-                  scope="GOAL" if reason else "ATTEMPT", reason=reason,
+-                  outcome=usage["outcome"], evidence_is_metadata_only=True)
++        output = status_from_locked(cfg, state, events + [event])
++        return {**output, "event_recorded": True, "outcome": usage["outcome"], "evidence_is_metadata_only": True}
+ 
+ 
+ def progress(config_path, state_value, meaningful, evidence):
+@@ -528,8 +590,30 @@
+     state = state_path(cfg, state_value)
+     with locked(state):
+         cfg, state, events, attempts, used, breach, stagnant = load_state(config_path, state)
+-        append_event(state, events, "PROGRESS", {"meaningful": meaningful, "evidence": evidence})
+-    return status(config_path, state)
++        event = append_event(state, events, "PROGRESS", {"meaningful": meaningful, "evidence": evidence})
++        return {**status_from_locked(cfg, state, events + [event]), "event_recorded": True}
++
++
++def status_from_locked(cfg, state, events):
++    """Compute commit response before releasing the caller's single lock."""
++    attempts, used, breach, stagnant = replay(events, cfg)
++    reason = exhausted(cfg, events, breach, stagnant)
++    if len(attempts) >= cfg["limits"]["max_attempts"]:
++        reason = reason or "Attempt budget exhausted; no further reservations"
++    capacity = metadata_capacity(state, events)
++    scope = "GOAL" if reason else "STATUS"
++    if not reason and capacity["new_reservations_blocked"]:
++        reason = "No new reservation fits with bounded FINISH headroom; preserve pending completions"
++        scope = "METADATA"  # Not a terminal budget stop; FINISH may release slack.
++    remaining = {key: (cap - used[key] if cap != "unselected" else "unselected") for key, cap in caps(cfg).items()}
++    return result("BUDGET_EXHAUSTED" if reason else "READY_FOR_LIGHT_REVIEW", reason=reason,
++                  scope=scope, charged=used, remaining=remaining, breach=breach,
++                  remaining_attempts=max(0, cfg["limits"]["max_attempts"] - len(attempts)), attempts=len(attempts),
++                  pending=[k for k, a in attempts.items() if a["usage"] is None],
++                  elapsed_seconds=time.time() - events[0]["time"], stagnant_reviews=stagnant,
++                  stagnation_stop_latched=stagnant >= cfg["limits"]["max_stagnation"],
++                  metadata_capacity=capacity,
++                  accounting_coverage="Recorded RUN events only; SETUP is separately reviewed operational accounting")
+ 
+ 
+ def status(config_path, state_value):
+@@ -537,14 +621,7 @@
+     state = state_path(cfg, state_value)
+     with locked(state):
+         cfg, _, events, attempts, used, breach, stagnant = load_state(config_path, state)
+-        reason = exhausted(cfg, events, breach, stagnant)
+-        if len(attempts) >= cfg["limits"]["max_attempts"]:
+-            reason = reason or "Attempt budget exhausted; no further reservations"
+-        remaining = {key: (cap - used[key] if cap != "unselected" else "unselected") for key, cap in caps(cfg).items()}
+-        return result("BUDGET_EXHAUSTED" if reason else "READY_FOR_LIGHT_REVIEW", reason=reason,
+-                      scope="GOAL" if reason else "STATUS", charged=used, remaining=remaining, remaining_attempts=max(0, cfg["limits"]["max_attempts"] - len(attempts)), attempts=len(attempts), pending=[k for k, a in attempts.items() if a["usage"] is None],
+-                      elapsed_seconds=time.time() - events[0]["time"], stagnant_reviews=stagnant,
+-                      goal_achievement="NOT_COMPUTED", accounting_coverage="Recorded events only; not automatic provider/conversation metering")
++        return status_from_locked(cfg, state, events)
+ 
+ 
+ def main():
+@@ -583,7 +660,8 @@
+         print(json.dumps(output, sort_keys=True, allow_nan=False))
+         return 0 if output["status"] == "READY_FOR_LIGHT_REVIEW" else 2
+     except (GuardError, OSError, ValueError, TypeError) as exc:
+-        print(json.dumps(result(getattr(exc, "status", "BLOCKED_CONFIG"), reason=str(exc))))
++        print(json.dumps(result(getattr(exc, "status", "BLOCKED_CONFIG"), reason=str(exc),
++                                **getattr(exc, "fields", {}))))
+         return 2
+ 
+ 
+--- before/payload/AGENTS.md
++++ after/payload/AGENTS.md
+@@ -46,6 +46,9 @@
+   사용자의 ultimate goal까지 이어가는 자율 진행 overlay이고, monk는 독립적인 조사 제한이다.
+   새 양식은 `goal.enabled`와 `goal.monk`를 사용한다. 기존 STATE의 standard는 monk 꺼짐,
+   monk는 켜짐으로 호환해서 읽는다. 별도 native Codex mode key를 추가하지 않는다.
++- Proxy 준비는 별도 사용자 승인 유한 SETUP 배정으로 `research/_templates/GOAL_SETUP.md`에
++  사전 예약·사용·실패·잔여를 기록한다. 완료/독립 QA/참조 artifact 확인 후 RUN init한다.
++  SETUP은 운영상 검수이며 guard 강제가 아니다. 단일 총액의 분할·추가/이전은 사용자 승인 사항이다.
+ - Goal 요청 시 `.codex/guides/goal.md`를 직접 읽고 사용자 작성 `research/GOAL_CONFIG.md`,
+   frozen task-specific proxy와 자원·권한·독립 QA를 확인한다. 설치/양식 작성은 시작 요청이 아니다.
+ - Main은 연구 발명·수학적 분석과 직접 코드 검수를 계속 맡는다. Engineer는 단일 writer,
+--- before/payload/START.txt
++++ after/payload/START.txt
+@@ -50,3 +50,7 @@
+ Helper는 실행기가 아니므로 실제 외부 bounded executor 검수와 자원 강제 가능 범위를 확인해.
+ Goal의 effort: QA medium/새 평가 경로 high, Supervisor routine high/중요 채택·기각·방향변경·수학판단 xhigh.
+ Engineer high/xhigh 유지, 세 역할이 Main 제외3슬롯 공유, 코드 writer1명. 실제 spawn 선택을 기록해.
++
++Goal proxy 준비 전에 별도 사용자 SETUP 배정과 GOAL_SETUP 기록을 확인해.
++SETUP 완료·QA·참조 artifact 불변 확인 뒤 RUN init하고, 준비비용과 RUN비용을 함께 보여줘.
++SETUP Markdown은 운영 검수이며 guard 강제가 아니야. 단일 총액을 임의 분할/추가하지 마.
+--- before/payload/examples/GOAL_EXAMPLE.md
++++ after/payload/examples/GOAL_EXAMPLE.md
+@@ -7,13 +7,24 @@
+ 
+ 작성 순서:
+ 
+-1. `research/GOAL_CONFIG.md`의 목표·경로·환경·한도를 사용자가 채운다. 예를 들어 CPU 전용이면
+-   `gpu_ids=[]`, `vram_mib=0`, `total_gpu_seconds=0`; token cap을 안 쓰면 `"unselected"`.
+-2. Main/Engineer가 PROXY_CONTRACT를 작은 known-answer fixture/evaluator에 맞춰 작성한다.
++1. 사용자가 유한 **SETUP 배정**과 `research/GOAL_CONFIG.md`의 **RUN 배정**을 별도로 정한다.
++   단일 총액이면 사용자가 분할을 명시적으로 승인한다. Main은 `research/_templates/GOAL_SETUP.md`로
++   `SETUP.md`에 승인·최초 시작 UTC·deadline·작업 전 예약·actual/UNKNOWN·실패/재시도·잔여를 기록한다.
++   SETUP 미승인 시 준비 금지다. 예를 들어 RUN이 CPU 전용이면 `gpu_ids=[]`, `vram_mib=0`,
++   `total_gpu_seconds=0`; token cap을 안 쓰면 `"unselected"`. 예시는 예산이나 실행을 승인하지 않는다.
++2. 승인된 SETUP 범위에서 Main/Engineer가 PROXY_CONTRACT와 작은 known-answer evaluator를 준비한다.
+    모든 비교는 같은 frozen 데이터/metric/aggregation을 사용한다. 실제 파일의 SHA256만 적는다.
+-3. QA가 계약/코드/비교와 외부 executor를 검수한다. Executor가 없거나 필수 hard limit를
+-   강제하지 못하면 실험은 NEEDS_USER_RUN이다. 허용된 이론 연구/검토는 별도 유한 예산 안에서 계속한다.
+-4. 아래는 **파일에 기록할 JSON 예약 예시**다. 명령이나 실제 실행 요청이 아니다.
++   Main/Engineer/QA calls와 tiny 검사도 SETUP 비용이다. 기존 proxy 재사용이면 provenance와 이전
++   검수·비용/UNKNOWN을 보존하고 새 확인 비용을 유효한 SETUP 배정에서 부과한다.
++3. 독립 QA가 계약/코드/비교와 외부 executor를 검수한다. SETUP 완료·pending 없음·참조 artifact
++   불변 확인 후에만 RUN init한다. 한도 안에서 미완료면 handoff다. SETUP Markdown은 운영상 검수하며
++   guard가 강제/계측하지 않는다. Executor/필수 hard limit가 없으면 실험은 NEEDS_USER_RUN이다.
++4. SETUP 비용 링크·RUN 배정·합산 비용/UNKNOWN을 GOAL_PROGRESS에 남긴다. SETUP.md/progress가 있는
++   `research/goals/<id>/`는 부모로 유지하고, init의 --state는 아직 없는 child
++   `research/goals/<id>/run-state/`로 지정해 RUN을 freeze한다. 이후 모든 helper도 같은 child를 쓴다.
++   RUN elapsed는 이때 시작한다. 원래 end-to-end deadline과 과거 사용량은 초기화하지 않는다.
++   미사용 배정 자동 이전은 금지다. Init 이후 허용된 preflight도 RUN ledger에 예약한다.
++5. 아래는 **freeze 이후 파일에 기록할 JSON 예약 예시**다. 명령이나 실제 실행 요청이 아니다.
+ 
+ ```json
+ {"id":"toy-001","kind":"experiment","retry_of":null,"light":true,"cost_known":true,"duration_seconds":2,"cpu_cores":1,"ram_mib":32,"gpu_ids":[],"vram_mib":0,"bounds":{"cpu_seconds":2,"gpu_seconds":0,"disk_bytes":4096,"agent_calls":0,"reviews":0,"tokens":0,"cost":0}}
+--- before/payload/research/GOAL_CONFIG.md
++++ after/payload/research/GOAL_CONFIG.md
+@@ -7,7 +7,14 @@
+ - `enabled=false`: goal 시작 안 함. `monk=false`: 기본 연구, `true`: monk 조사 제한.
+ - 빈 문자열은 미정이다. 숫자 0은 사용 금지이며 무제한이 아니다. 예시 값은 실행 허가가 아니다.
+ - 목표 후보 수는 목표의 일부다. 실제 성공 기준·허용 근거·중복 제거까지 만족해야 GOAL_MET이다.
+-- 각 비용은 준비/import/초기화/저장/실패/재시도/하위 프로세스를 포함한 전체 상한이다.
++- 아래 TOML은 **init 이후 RUN 배정**이다. Init 전 proxy 준비/독립 QA는 별도 사용자 승인한
++  유한 SETUP 배정으로 `research/_templates/GOAL_SETUP.md`에 예약·실제/UNKNOWN·실패·잔여를 기록한다.
++  SETUP 미승인 시 새 준비를 시작하지 않는다. 단일 총액/총시간은 사용자가 분할을 승인해야 하며
++  agent가 추가 예산을 만들거나 end-to-end deadline을 늘릴 수 없다. 재개/미사용 배정도 자동 이전하지 않는다.
++- SETUP 완료 또는 pre-existing reviewed prerequisite 기록·QA·참조 artifact 불변 확인 후 RUN init한다.
++  기존 proxy 재사용의 새 확인 비용도 SETUP에 부과한다. SETUP Markdown은 운영 검수이며 guard 강제가 아니다.
++  GOAL_PROGRESS에서 SETUP/RUN 비용을 함께 연결한다. 기존 작성본의 TOML/schema1은 자동 수정하지 않는다.
++- RUN 비용은 init 이후 준비/import/초기화/저장/실패/재시도/하위 프로세스 전체 상한이다.
+ - CPU/GPU work 단위는 core·second/device·second, RAM/VRAM은 MiB, 저장은 bytes다.
+   CPU/RAM은 동시 합계, VRAM은 지정 GPU마다 동시 합계, 저장은 누적 신규 쓰기 보수적 합계다.
+ - GPU 미사용: `gpu_ids=[]`, VRAM/GPU seconds=0. Token/cost cap 미선택은 문자열 `unselected`다.
+--- before/payload/research/_templates/GOAL_CONFIG.md
++++ after/payload/research/_templates/GOAL_CONFIG.md
+@@ -7,7 +7,14 @@
+ - `enabled=false`: goal 시작 안 함. `monk=false`: 기본 연구, `true`: monk 조사 제한.
+ - 빈 문자열은 미정이다. 숫자 0은 사용 금지이며 무제한이 아니다. 예시 값은 실행 허가가 아니다.
+ - 목표 후보 수는 목표의 일부다. 실제 성공 기준·허용 근거·중복 제거까지 만족해야 GOAL_MET이다.
+-- 각 비용은 준비/import/초기화/저장/실패/재시도/하위 프로세스를 포함한 전체 상한이다.
++- 아래 TOML은 **init 이후 RUN 배정**이다. Init 전 proxy 준비/독립 QA는 별도 사용자 승인한
++  유한 SETUP 배정으로 `research/_templates/GOAL_SETUP.md`에 예약·실제/UNKNOWN·실패·잔여를 기록한다.
++  SETUP 미승인 시 새 준비를 시작하지 않는다. 단일 총액/총시간은 사용자가 분할을 승인해야 하며
++  agent가 추가 예산을 만들거나 end-to-end deadline을 늘릴 수 없다. 재개/미사용 배정도 자동 이전하지 않는다.
++- SETUP 완료 또는 pre-existing reviewed prerequisite 기록·QA·참조 artifact 불변 확인 후 RUN init한다.
++  기존 proxy 재사용의 새 확인 비용도 SETUP에 부과한다. SETUP Markdown은 운영 검수이며 guard 강제가 아니다.
++  GOAL_PROGRESS에서 SETUP/RUN 비용을 함께 연결한다. 기존 작성본의 TOML/schema1은 자동 수정하지 않는다.
++- RUN 비용은 init 이후 준비/import/초기화/저장/실패/재시도/하위 프로세스 전체 상한이다.
+ - CPU/GPU work 단위는 core·second/device·second, RAM/VRAM은 MiB, 저장은 bytes다.
+   CPU/RAM은 동시 합계, VRAM은 지정 GPU마다 동시 합계, 저장은 누적 신규 쓰기 보수적 합계다.
+ - GPU 미사용: `gpu_ids=[]`, VRAM/GPU seconds=0. Token/cost cap 미선택은 문자열 `unselected`다.
+--- before/payload/research/_templates/GOAL_PROGRESS.md
++++ after/payload/research/_templates/GOAL_PROGRESS.md
+@@ -5,7 +5,11 @@
+ - Monk 선택과 기존 standard/monk STATE 대응 / 방법론 노출:
+ - 현재 상태: SETUP / ACTIVE / GOAL_MET / BUDGET_EXHAUSTED / STALLED / USER_PAUSED / INTEGRITY_BLOCKED
+ - Goal 달성: YES / NO / UNVERIFIED, 처음 목표의 각 조건에 대한 증거:
+-- 현재 elapsed/attempt/retry/review/stagnation/agent-call 예약·잔여량 / 미계측 항목:
++- SETUP 기록 경로·hash / 사용자 별도 배정·최초 시작·완료/QA/참조 artifact 불변 근거:
++- SETUP 사용·UNKNOWN·실패/재시도·pending·잔여 / RUN 배정·init 시각 / 합산 비용과 미확인:
++- 단일 total의 사용자 승인 분할 / 원래 end-to-end deadline·현재 잔여 / 배정 이전 승인 여부:
++- SETUP은 운영상 검수이며 guard 강제·자동 계측 아님 / 미완료 SETUP이면 RUN init 금지:
++- 현재 RUN elapsed/attempt/retry/review/stagnation/agent-call 예약·잔여량 / 미계측 항목:
+ - 미완료 예약·실패·중단 기록 / 다음 실행자와 확인할 revision:
+ 
+ | 후보·lineage·mechanism | 근거 class·QA | Supervisor rationale | 기준 충족·중복 제거 | 사용자 최종 검증 |
+--- before/payload/research/_templates/GOAL_SETUP.md
++++ after/payload/research/_templates/GOAL_SETUP.md
+@@ -0,0 +1,55 @@
++# Goal SETUP budget and prerequisite record
++
++DRAFT · Main 기록 / 사용자 예산 승인 / 독립 QA 검수.
++이 Markdown은 운영상 검토하는 회계 기록이다. goal_guard가 강제·자동 계측하지 않는다.
++복사 위치: `research/goals/<id>/SETUP.md`. 작성본은 재설치로 초기화하지 않는다.
++이 과제 root는 문서 부모이며 guard의 --state가 아니다. RUN init는 아직 없는 별도 child
++`research/goals/<id>/run-state/`를 사용하고 이후 helper 명령도 같은 child를 참조한다.
++
++- Goal ID / 사용자 요청·승인 근거 / 기록 revision:
++- 상태: NOT_AUTHORIZED / PREPARING / COMPLETED / HANDOFF / EXHAUSTED
++- SETUP 목적·완료 기준 / proxy 준비 또는 기존 검수본 재사용:
++- 사용자 SETUP 배정 / 별도 RUN 배정 / 단일 총액이면 명시적으로 승인한 분할:
++- SETUP 최초 시작 UTC / 유한 elapsed 한도 / deadline UTC / 중단·재개 이력:
++- End-to-end deadline이 있으면 원래 시각 / RUN 시작 시 남은 시간과 승인된 RUN 한도:
++- 환경·허용 경로·CPU/RAM/GPU/VRAM/동시성 peak 한도 / heavy·unknown USER_ONLY:
++
++아래 모든 필수 한도는 사용자가 유한 값으로 정한다. 빈칸은 미정, 0은 금지다.
++Token/cost cap만 명시적 미선택을 허용한다. 필수 관측/강제가 불가능하면 dependent work는
++NEEDS_USER_RUN이다. SETUP 승인 누락 시 새 proxy 준비를 시작하지 않는다.
++
++| 차원·단위 | 승인 SETUP 상한 | 누적 보수적 부과 | pending 예약 포함 | 잔여량·미확인 |
++|---|---|---|---|---|
++| elapsed seconds (pause 포함) | 미정 | 미정 | 미정 | 미정 |
++| CPU core-seconds / GPU device-seconds | 미정 | 미정 | 미정 | 미정 |
++| 신규 disk bytes | 미정 | 미정 | 미정 | 미정 |
++| Main·Engineer·QA·Supervisor calls / reviews | 미정 | 미정 | 미정 | 미정 |
++| work attempts / failures·retries 한도 | 미정 | 미정 | 미정 | 미정 |
++| tokens / monetary cost (명시적 미선택 가능) | 미정 | 미정 | 미정 | 미정 |
++
++각 작업 **전에** Main이 startup/work/cleanup/save까지 upper bound를 예약한다.
++각 작업 **후** actual 또는 UNKNOWN, 실패/재시도 비용, evidence와 잔여량을 추가한다.
++누적 차원은 max(reserved, known actual); UNKNOWN과 pending은 예약량을 계속 부과한다.
++Main의 유의미한 작업 단위·subagent turn·교체·QA도 포함하며 실패 비용을 환불하지 않는다.
++원래 시작시간/소모량은 재개 후에도 유지한다. 상한 초과·미확인 비용은 새 작업 중단/handoff다.
++
++| 작업 ID·담당·retry_of | 사전 예약 시각·상한 (각 차원·peak) | 실제 시작/종료·actual/UNKNOWN | 상태·실패비용·pending | artifact·잔여량 |
++|---|---|---|---|---|
++| 작성 필요 | 준비 전 기록 | 준비 후 기록 | NOT_RUN | 미확인 |
++
++RUN init 이전 완료 gate (Main과 독립 QA가 근거를 확인):
++
++- SETUP 승인·원래 시작시각·소모·잔여·실패 기록 완비; pending 준비 작업 없음:
++- 기존 reviewed proxy 재사용이면 원본 revision/검수/provenance와 과거 비용 또는 UNKNOWN:
++- 재사용에서도 새 revision/hash/QA 확인 비용은 위 유효한 배정으로 예약·부과:
++- 최종 proxy contract/evaluator/baseline/config/artifact 경로·revision·SHA256:
++- 독립 QA의 validity·변경 없음 확인과 bounded executor/enforcement 또는 NEEDS_USER_RUN:
++- COMPLETED 승인 근거 또는 미완료 HANDOFF (미완료면 RUN init 금지):
++- `GOAL_PROGRESS.md`의 SETUP 비용 링크·RUN 예산·합산 비용/UNKNOWN·남은 end-to-end 시간:
++
++준비 완료 → QA 및 참조 artifact 불변 확인 → RUN init(freeze) → RUN 예약 순서를 따른다.
++Helper READY는 이 운영 gate의 확인을 대신하지 않는다. 완료 전 한도가 끝나면 handoff하며
++새 init/재개/이름 변경으로 SETUP이나 RUN 예산·deadline을 초기화하지 않는다.
++미사용 배정의 이전, 추가 배정, 총액의 분할은 사용자 명시 승인 없이는 금지한다.
++Init 이후 허용된 준비/preflight는 RUN ledger에 예약한다. Frozen artifact를 바꾸는 준비는
++별도 승인·검토된 migration 없이는 금지하며 과거 비용과 시작시간을 보존한다.
+--- before/payload/research/_templates/PROXY_CONTRACT.md
++++ after/payload/research/_templates/PROXY_CONTRACT.md
+@@ -27,7 +27,13 @@
+ sha256 = ""
+ ```
+ 
++준비는 사용자 별도 승인 SETUP 배정 안에서 예약한다(`research/_templates/GOAL_SETUP.md`).
++기존 reviewed proxy 재사용도 provenance·과거 비용/UNKNOWN과 새 확인 비용을 기록한다.
++
+ Freeze 전에 확인할 내용:
++
++- SETUP 완료 기록·비용·pending 없음, 독립 QA와 참조 artifact 불변 확인; RUN 배정과 연결.
++  SETUP Markdown 회계는 운영상 검수하며 goal_guard가 검사·강제하지 않는다.
+ 
+ - `baseline/evaluator`: exact version, entrypoint, 필수 옵션, baseline 재현/독립 정답 예제.
+ - `splits/dev_policy/heldout_policy`: fit/tune/DEV 구분, 반복 DEV 노출·multiplicity,
+--- before/scripts/install.py
++++ after/scripts/install.py
+@@ -220,10 +220,17 @@
+             elif not span and text.startswith("# Research workflow"):
+                 raise Conflict("Unmanaged edited legacy AGENTS.md; migrate it manually, preserving project rules")
+             else:
+-                if span and previous.get("agents_block_hash"):
+-                    actual = digest(text[span[0]:span[1]].encode())
+-                    if actual != previous["agents_block_hash"] and text[span[0]:span[1]] != content:
+-                        raise Conflict("Managed AGENTS.md block has local edits; review them before update")
++                if span:
++                    existing_block = text[span[0]:span[1]]
++                    actual = digest(existing_block.encode())
++                    # Markers alone are not provenance. Older pristine payloads used one
++                    # trailing newline; do not normalize arbitrary edits into a match.
++                    body = existing_block[len(BEGIN):-len(END)]
++                    pristine_legacy = (body.startswith("\n") and body.endswith("\n") and
++                                       digest(body[1:].encode()) in legacy.get("AGENTS.md", []))
++                    if (existing_block != content and actual != previous.get("agents_block_hash")
++                            and not pristine_legacy):
++                        raise Conflict("Managed AGENTS.md block has local edits or unknown provenance; preserve and merge it manually")
+                 new = append_or_replace(text, content, BEGIN, END).encode()
+         elif mode == "toml-merge":
+             new = merge_config(decode(old)).encode() if old is not None else new
+--- before/tests/test_goal_guard.py
++++ after/tests/test_goal_guard.py
+@@ -1,5 +1,5 @@
+ """Tiny offline fixtures only; call the actual guard, never an experiment/executor."""
+-from contextlib import redirect_stdout
++from contextlib import redirect_stdout, contextmanager, ExitStack
+ import copy
+ import importlib.util
+ import io
+@@ -149,6 +149,21 @@
+         with self.assertRaises(guard.GuardError):
+             self.start()
+ 
++    def test_documented_setup_parent_and_fresh_run_state_child(self):
++        parent = self.root / 'goals/g1'
++        parent.mkdir(parents=True)
++        setup = parent / 'SETUP.md'
++        setup.write_text('Operationally completed prerequisite and costs')
++        state = parent / 'run-state'
++        self.assertEqual(guard.init(self.config_path, state)['status'], 'READY_FOR_LIGHT_REVIEW')
++        self.assertEqual(setup.read_text(), 'Operationally completed prerequisite and costs')
++        self.assertTrue((state / 'ledger.jsonl').is_file())
++        examples = (ROOT / 'payload/.codex/guides/goal.md').read_text().splitlines()
++        commands = [line for line in examples if line.startswith('python3 ') and '--state ' in line]
++        self.assertEqual(len(commands), 5)
++        for command in commands:
++            self.assertEqual(command.split('--state ', 1)[1].split()[0], '/project/research/goals/g1/run-state')
++
+     def test_freeze_rejects_config_contract_source_or_snapshot_change(self):
+         self.start()
+         for path in (self.config_path, self.contract, self.source, self.state / 'config.md'):
+@@ -348,9 +363,10 @@
+             guard.reserve(self.config_path, self.state, self.plan())
+         self.assertEqual(external.read_text(), 'preserve user result')
+         ledger.unlink()
+-        ledger.write_bytes(b'x' * (guard.LEDGER_LIMIT + 1))
+-        with self.assertRaises(guard.GuardError):
+-            guard.status(self.config_path, self.state)
++        with patch.object(guard, 'LEDGER_LIMIT', 1024):
++            ledger.write_bytes(b'x' * 1025)
++            with self.assertRaises(guard.GuardError):
++                guard.status(self.config_path, self.state)
+ 
+     def test_reported_peak_breach_and_unknown_usage_remain_conservative(self):
+         self.start()
+@@ -377,6 +393,218 @@
+             self.assertEqual(result['status'], 'BUDGET_EXHAUSTED')
+             self.assertEqual(result['scope'], 'GOAL')
+ 
++    def events(self):
++        return [json.loads(line) for line in (self.state / 'ledger.jsonl').read_text().splitlines()]
++
++    def old_event(self, kind, payload):
++        # Simulate an authentic pre-patch ledger; never use the new append gate.
++        events = self.events()
++        event = guard.envelope(kind, payload, len(events), events[-1]['hash'], 100.0)
++        with (self.state / 'ledger.jsonl').open('ab') as stream:
++            stream.write(guard.json_bytes(event))
++
++    def event_size(self, kind, payload, offset=0):
++        events = self.events()
++        return len(guard.json_bytes(guard.envelope(kind, payload, len(events)+offset, events[-1]['hash'], 100.0)))
++
++    def test_late_progress_cannot_resume_stagnation_and_pending_can_finish(self):
++        self.start()
++        guard.reserve(self.config_path, self.state, self.plan())
++        guard.progress(self.config_path, self.state, False, 'first')
++        guard.progress(self.config_path, self.state, False, 'limit')
++        late = guard.progress(self.config_path, self.state, True, 'late evidence')
++        self.assertTrue(late['event_recorded'])
++        self.assertTrue(late['stagnation_stop_latched'])
++        self.assertEqual(late['scope'], 'GOAL')
++        before = (self.state / 'ledger.jsonl').read_bytes()
++        self.assertEqual(guard.reserve(self.config_path, self.state, self.plan('b'))['scope'], 'GOAL')
++        self.assertEqual((self.state / 'ledger.jsonl').read_bytes(), before)
++        done = guard.finish(self.config_path, self.state, 'a', self.usage())
++        self.assertTrue(done['event_recorded'])
++        self.assertEqual(done['pending'], [])
++        self.assertEqual(done['status'], 'BUDGET_EXHAUSTED')
++
++    def test_old_post_stagnation_tail_remains_readable_and_charged(self):
++        self.start()
++        for meaningful in (False, False, True):
++            self.old_event('PROGRESS', {'meaningful': meaningful, 'evidence': 'old review'})
++        self.old_event('RESERVE', self.plan())
++        usage = self.usage()
++        usage['evidence']['artifact_ids'] = ['x' * (guard.PAYLOAD_LIMIT + 1)]
++        self.old_event('FINISH', {'id': 'a', 'usage': usage})
++        self.old_event('RESERVE', self.plan('b'))
++        status = guard.status(self.config_path, self.state)
++        self.assertTrue(status['stagnation_stop_latched'])
++        self.assertEqual(status['charged']['cpu_seconds'], 20)
++        self.assertEqual(status['pending'], ['b'])
++        self.assertEqual(guard.reserve(self.config_path, self.state, self.plan('c'))['scope'], 'GOAL')
++        self.assertTrue(guard.finish(self.config_path, self.state, 'b', self.usage())['event_recorded'])
++
++    def test_progress_commit_response_uses_one_real_lock_with_exit_contender(self):
++        self.start()
++        original = guard.locked
++        calls = []
++        with ExitStack() as contender:
++            @contextmanager
++            def contended(state):
++                calls.append(state)
++                with original(state):
++                    yield
++                if len(calls) == 1:
++                    contender.enter_context(original(state))
++            with patch.object(guard, 'locked', contended):
++                response = guard.progress(self.config_path, self.state, False, 'committed exactly once')
++            self.assertEqual(len(calls), 1)
++            self.assertTrue(response['event_recorded'])
++            self.assertEqual(response['stagnant_reviews'], 1)
++            self.assertEqual(len(self.events()), 2)
++        before = (self.state / 'ledger.jsonl').read_bytes()
++        with original(self.state), self.assertRaisesRegex(guard.GuardError, 'locked'):
++            guard.progress(self.config_path, self.state, False, 'collision before commit')
++        self.assertEqual((self.state / 'ledger.jsonl').read_bytes(), before)
++
++    def test_insufficient_finish_headroom_refuses_without_mutation(self):
++        self.start()
++        before = (self.state / 'ledger.jsonl').read_bytes()
++        cap = len(before) + self.event_size('RESERVE', self.plan()) + guard.FINISH_SLOT - 1
++        with patch.object(guard, 'LEDGER_LIMIT', cap):
++            with self.assertRaises(guard.GuardError) as raised:
++                guard.reserve(self.config_path, self.state, self.plan())
++            self.assertFalse(raised.exception.fields['event_recorded'])
++        self.assertEqual((self.state / 'ledger.jsonl').read_bytes(), before)
++
++    def test_multiple_pending_finish_slots_survive_progress_and_boundary_breach(self):
++        self.start()
++        before = (self.state / 'ledger.jsonl').read_bytes()
++        cap = (len(before) + self.event_size('RESERVE', self.plan()) +
++               self.event_size('RESERVE', self.plan('b'), 1) + 2 * guard.FINISH_SLOT)
++        with patch.object(guard, 'LEDGER_LIMIT', cap):
++            for name in ('a', 'b'):
++                self.assertTrue(guard.reserve(self.config_path, self.state, self.plan(name))['event_recorded'])
++            status = guard.status(self.config_path, self.state)
++            self.assertEqual(status['scope'], 'METADATA')
++            self.assertEqual(status['metadata_capacity']['free_unreserved_bytes'], 0)
++            before = (self.state / 'ledger.jsonl').read_bytes()
++            with self.assertRaises(guard.GuardError) as raised:
++                guard.progress(self.config_path, self.state, True, 'cannot steal slots')
++            self.assertEqual(raised.exception.fields['scope'], 'METADATA')
++            self.assertEqual((self.state / 'ledger.jsonl').read_bytes(), before)
++            usage = self.usage('TIMEOUT')
++            usage['actual']['cpu_seconds'] = 12
++            first = guard.finish(self.config_path, self.state, 'a', usage)
++            self.assertTrue(first['breach'])
++            self.assertEqual(first['charged']['cpu_seconds'], 22)
++            self.assertEqual(first['scope'], 'GOAL')
++            self.assertTrue(first['metadata_capacity']['completion_headroom_ok'])
++            last = guard.finish(self.config_path, self.state, 'b', self.usage())
++            self.assertTrue(last['event_recorded'])
++            self.assertEqual(last['pending'], [])
++            self.assertEqual(last['charged']['cpu_seconds'], 22)
++
++    def test_capacity_status_refusal_agree_and_completion_can_release_slack(self):
++        self.start()
++        guard.reserve(self.config_path, self.state, self.plan())
++        size = (self.state / 'ledger.jsonl').stat().st_size
++        with patch.object(guard, 'LEDGER_LIMIT', size + guard.FINISH_SLOT + 2000):
++            status = guard.status(self.config_path, self.state)
++            refused = guard.reserve(self.config_path, self.state, self.plan('b'))
++            self.assertEqual(status['scope'], 'METADATA')
++            self.assertEqual(refused['metadata_capacity'], status['metadata_capacity'])
++            done = guard.finish(self.config_path, self.state, 'a', self.usage())
++            self.assertEqual(done['status'], 'READY_FOR_LIGHT_REVIEW')
++            self.assertFalse(done['stagnation_stop_latched'])
++
++    def test_short_retry_id_at_exact_capacity_is_not_false_exhaustion(self):
++        self.start()
++        plan = self.plan(kind='agent', duration_seconds=1, cpu_cores=0, ram_mib=0)
++        plan['bounds'] = {key: int(key == 'agent_calls') for key in guard.DIMENSIONS}
++        guard.reserve(self.config_path, self.state, plan)
++        guard.finish(self.config_path, self.state, 'a', self.usage())
++        retry = dict(plan, id='b', retry_of='a')
++        cap = (self.state / 'ledger.jsonl').stat().st_size + self.event_size('RESERVE', retry) + guard.FINISH_SLOT
++        with patch.object(guard, 'LEDGER_LIMIT', cap):
++            self.assertEqual(guard.status(self.config_path, self.state)['status'], 'READY_FOR_LIGHT_REVIEW')
++            self.assertTrue(guard.reserve(self.config_path, self.state, retry)['event_recorded'])
++            self.assertTrue(guard.finish(self.config_path, self.state, 'b', self.usage())['event_recorded'])
++
++    def test_large_event_refusal_does_not_claim_global_exhaustion(self):
++        gpu = 'G' * 2000
++        self.cfg['limits'].update(gpu_ids=[gpu], vram_mib=20, total_gpu_seconds=40)
++        self.start()
++        capacity = guard.metadata_capacity(self.state, self.events())
++        cap = capacity['ledger_bytes'] + capacity['minimum_reserve_with_finish_bytes'] + 300
++        large = self.plan(gpu_ids=[gpu], vram_mib=1)
++        large['bounds']['gpu_seconds'] = 10
++        before = (self.state / 'ledger.jsonl').read_bytes()
++        with patch.object(guard, 'LEDGER_LIMIT', cap):
++            self.assertEqual(guard.status(self.config_path, self.state)['status'], 'READY_FOR_LIGHT_REVIEW')
++            with self.assertRaises(guard.GuardError) as raised:
++                guard.reserve(self.config_path, self.state, large)
++            self.assertEqual(raised.exception.fields['scope'], 'EVENT')
++            self.assertFalse(raised.exception.fields['event_recorded'])
++            self.assertEqual((self.state / 'ledger.jsonl').read_bytes(), before)
++            self.assertTrue(guard.reserve(self.config_path, self.state, self.plan())['event_recorded'])
++
++    def test_legacy_headroom_debt_preserves_cost_and_accepts_finish_that_fits(self):
++        self.start()
++        self.old_event('RESERVE', self.plan())
++        before = (self.state / 'ledger.jsonl').read_bytes()
++        usage = self.usage('OOM')
++        usage['actual']['cpu_seconds'] = 12
++        finish_size = self.event_size('FINISH', {'id': 'a', 'usage': usage})
++        with patch.object(guard, 'LEDGER_LIMIT', len(before) + finish_size):
++            status = guard.status(self.config_path, self.state)
++            self.assertFalse(status['metadata_capacity']['completion_headroom_ok'])
++            self.assertEqual(status['charged']['cpu_seconds'], 10)
++            self.assertEqual(guard.reserve(self.config_path, self.state, self.plan('b'))['scope'], 'METADATA')
++            with self.assertRaises(guard.GuardError):
++                guard.progress(self.config_path, self.state, True, 'legacy debt')
++            done = guard.finish(self.config_path, self.state, 'a', usage)
++            self.assertTrue(done['event_recorded'])
++            self.assertTrue(done['breach'])
++            self.assertEqual(done['charged']['cpu_seconds'], 12)
++            self.assertEqual(done['pending'], [])
++
++    def test_legacy_finish_that_cannot_fit_is_honest_and_status_is_blocked(self):
++        self.start()
++        self.old_event('RESERVE', self.plan())
++        before = (self.state / 'ledger.jsonl').read_bytes()
++        with patch.object(guard, 'LEDGER_LIMIT', len(before) + 1):
++            with self.assertRaises(guard.GuardError) as raised:
++                guard.finish(self.config_path, self.state, 'a', self.usage())
++            self.assertFalse(raised.exception.fields['event_recorded'])
++            status = guard.status(self.config_path, self.state)
++            self.assertEqual(status['scope'], 'METADATA')
++            self.assertEqual(status['pending'], ['a'])
++            self.assertEqual(status['charged']['cpu_seconds'], 10)
++            self.assertEqual((self.state / 'ledger.jsonl').read_bytes(), before)
++
++    def test_serialized_escaping_limits_maximum_id_and_numeric_envelope(self):
++        self.start()
++        name = 'a' * 64
++        guard.reserve(self.config_path, self.state, self.plan(name))
++        usage = self.usage()
++        usage['evidence']['artifact_ids'] = ['\U0001f600' * 400]
++        before = (self.state / 'ledger.jsonl').read_bytes()
++        with self.assertRaisesRegex(guard.GuardError, '4096'):
++            guard.finish(self.config_path, self.state, name, usage)
++        self.assertEqual((self.state / 'ledger.jsonl').read_bytes(), before)
++        usage['actual'] = {key: 10**18 if key in guard.INTEGER_DIMENSIONS else 1.0000000000000002e-200 for key in guard.DIMENSIONS}
++        usage['duration_seconds'] = 10**18
++        usage['evidence']['artifact_ids'] = ['\x01']
++        payload = {'id': name, 'usage': usage}
++        base = len(guard.json_bytes(payload))
++        usage['evidence']['artifact_ids'][0] += 'x' * (guard.PAYLOAD_LIMIT - base)
++        self.assertEqual(len(guard.json_bytes(payload)), guard.PAYLOAD_LIMIT)
++        self.assertTrue(guard.finish(self.config_path, self.state, name, usage)['event_recorded'])
++        self.assertLessEqual(len(guard.json_bytes(self.events()[-1])), guard.FINISH_SLOT)
++        # Full envelope with maximum sequence/time and numeric representations.
++        edge = guard.envelope('FINISH', payload, 10**18, 'f' * 64, 1.0000000000000002e-200)
++        self.assertLessEqual(len(guard.json_bytes(edge)) - len(guard.json_bytes(payload)), guard.ENVELOPE_LIMIT)
++        oversized = self.plan('c', retry_of='x' * 5000)
++        with self.assertRaises(guard.GuardError):
++            guard.bounded_event('RESERVE', oversized, self.events())
++
+     def test_cli_validates_without_importing_evaluator_or_executing_commands(self):
+         output = io.StringIO()
+         before = set(self.root.iterdir())
+--- before/tests/test_goal_install.py
++++ after/tests/test_goal_install.py
+@@ -23,6 +23,18 @@
+         self.assertEqual((self.target / 'research/goals/existing/ledger.jsonl').read_text(), 'Past pending reservation')
+         self.assertEqual(installer.check(self.target), 0)
+         self.assertEqual(installer.make_plan(self.target, 'test-revision')[0], [])
++
++    def test_setup_record_is_managed_and_user_setup_survives(self):
++        self.write('research/goals/g1/SETUP.md', 'User authorized allocation and pending costs')
++        self.install()
++        self.assertEqual((self.target / 'research/goals/g1/SETUP.md').read_text(),
++                         'User authorized allocation and pending costs')
++        manifest, _, payload = installer.read_package()
++        item = next(item for item in manifest['files'] if item['destination'] == 'research/_templates/GOAL_SETUP.md')
++        self.assertEqual(item['mode'], 'managed-file')
++        self.assertEqual((self.target / item['destination']).read_bytes(), payload[item['destination']])
++        self.assertIn('GOAL_SETUP.md', payload['.codex/guides/goal.md'].decode())
++        self.assertIn('SETUP', payload['research/_templates/GOAL_PROGRESS.md'].decode())
+ 
+     def test_all_roles_unpinned_and_required_fields(self):
+         self.install()
+@@ -79,7 +91,7 @@
+         self.assertTrue((self.target / '.codex/agents/qa.toml').exists())
+         self.assertEqual(installer.check(self.target), 0)
+         self.assertEqual(installer.make_plan(self.target, 'test-revision')[0], [])
+-        self.assertEqual(json.loads((self.target / installer.META).read_text())['version'], '5.3.0')
++        self.assertEqual(json.loads((self.target / installer.META).read_text())['version'], '5.3.1')
+ 
+     def test_v52_hashes_and_instruction_wiring(self):
+         manifest, legacy, payload = installer.read_package()
+--- before/tests/test_install.py
++++ after/tests/test_install.py
+@@ -141,6 +141,54 @@
+         with self.assertRaises(installer.Conflict):
+             installer.make_plan(self.target, "test")
+ 
++    def test_unknown_block_without_metadata_or_block_hash_preserves_every_file(self):
++        self.install()
++        agents = self.target / "AGENTS.md"
++        agents.write_text("Outside before\n" + agents.read_text().replace(
++            "# Research workflow", "# Research workflow\nLocal rule must survive") + "Outside after\n")
++        meta = self.target / installer.META
++        metadata = json.loads(meta.read_text())
++        metadata.pop("agents_block_hash")
++        meta.write_text(json.dumps(metadata))
++        for metadata_exists in (True, False):
++            if not metadata_exists:
++                meta.unlink()
++            before = self.snapshot()
++            with self.subTest(metadata_exists=metadata_exists), self.assertRaises(installer.Conflict):
++                installer.make_plan(self.target, "test")
++            self.assertEqual(before, self.snapshot())
++
++    def test_current_block_without_metadata_preserves_outside_text(self):
++        self.install()
++        (self.target / installer.META).unlink()
++        agents = self.target / "AGENTS.md"
++        original = "Outside before\n" + agents.read_text() + "Outside after\n"
++        agents.write_text(original)
++        self.install()
++        self.assertEqual(agents.read_text(), original)
++
++    def test_clean_legacy_marked_block_without_metadata_upgrades(self):
++        manifest, legacy, payload = installer.read_package()
++        old_payload = "# Research workflow\nVerified pristine release\n"
++        legacy = copy.deepcopy(legacy)
++        legacy["AGENTS.md"].append(installer.digest(old_payload.encode()))
++        self.write("AGENTS.md", "Outside before\n" + installer.BEGIN + "\n" + old_payload +
++                   installer.END + "\nOutside after\n")
++        with patch.object(installer, "read_package", return_value=(manifest, legacy, payload)):
++            self.install()
++        current = (self.target / "AGENTS.md").read_text()
++        self.assertTrue(current.startswith("Outside before\n"))
++        self.assertTrue(current.endswith("\nOutside after\n"))
++        self.assertNotIn("Verified pristine release", current)
++
++    def test_recorded_clean_block_upgrades_even_when_not_known_legacy(self):
++        manifest, legacy, payload = installer.read_package()
++        old_payload = dict(payload, **{"AGENTS.md": b"# Recorded earlier workflow\n"})
++        with patch.object(installer, "read_package", return_value=(manifest, legacy, old_payload)):
++            self.install()
++        self.install()
++        self.assertIn("# Research workflow", (self.target / "AGENTS.md").read_text())
++
+     def test_inline_agents_fails_closed(self):
+         text = 'model="keep"\nagents={enabled=false}\n'
+         self.write(".codex/config.toml", text)
